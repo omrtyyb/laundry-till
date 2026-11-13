@@ -24,7 +24,13 @@ const loads = ['1 bag whites', '2 bags mixed colours', 'Bedding, 1 bag', 'Towels
 const spending = [['Milk and tea bags', 3.5], ['Bin bags', 4.99], ['Washer repair callout', 45], ['Cleaning spray', 2.75], ['Window cleaner', 10], ['Light bulbs', 6.2]]
 
 const pick = (list) => list[Math.floor(Math.random() * list.length)]
-const phone = () => '07' + String(Math.floor(Math.random() * 1e9)).padStart(9, '0')
+// A made-up customer and their phone number. Numbers are from Ofcom's range kept for TV and
+// drama (07700 900000-900999), so no real person is ever used, and each name keeps one number
+// so the customer pages group their tickets together.
+const customer = () => {
+  const name = pick(names)
+  return [name, '07700900' + String(100 + names.indexOf(name))]
+}
 const money = (min, max) => Math.round((min + Math.random() * (max - min)) * 100) / 100
 
 // A random time between 8am and 8pm, daysAgo days back (never later than now)
@@ -65,7 +71,15 @@ const addSpending = db.prepare(`
   INSERT INTO till_spending (description, amount, created_at)
   VALUES (?, ?, ?)
 `)
-const products = db.prepare('SELECT * FROM products').all()
+// A new database has no products yet, so add a few to sell
+const productCount = db.prepare('SELECT count(*) AS n FROM products').get().n
+if (productCount === 0) {
+  const addProduct = db.prepare('INSERT INTO products (name, price) VALUES (?, ?)')
+  for (const [name, price] of [['Washing powder', 1.5], ['Fabric softener', 1], ['Laundry bag', 3], ['Dryer sheets', 0.8]]) {
+    addProduct.run(name, price)
+  }
+}
+const products = db.prepare('SELECT * FROM products WHERE active = 1').all()
 
 // Everything is added in one go: either all entries are saved or none are
 let added = 0
@@ -75,13 +89,13 @@ db.transaction(() => {
     for (let i = 0; i < 2 + Math.floor(Math.random() * 2); i++) {
       const createdAt = randomTime(daysAgo)
       const paid = Math.random() < 0.7 ? 1 : 0
-      addDryCleaning.run(pick(names), phone(), pick(clothes), 1 + Math.floor(Math.random() * 5), pickupFor(createdAt), money(8, 60), paid, createdAt, paid ? createdAt : null)
+      addDryCleaning.run(...customer(), pick(clothes), 1 + Math.floor(Math.random() * 5), pickupFor(createdAt), money(8, 60), paid, createdAt, paid ? createdAt : null)
       added++
     }
     for (let i = 0; i < 2 + Math.floor(Math.random() * 2); i++) {
       const createdAt = randomTime(daysAgo)
       const paid = Math.random() < 0.7 ? 1 : 0
-      addServiceWash.run(pick(names), phone(), pick(loads), pickupFor(createdAt), money(10, 30), paid, createdAt, paid ? createdAt : null)
+      addServiceWash.run(...customer(), pick(loads), pickupFor(createdAt), money(10, 30), paid, createdAt, paid ? createdAt : null)
       added++
     }
     for (let i = 0; i < 3 + Math.floor(Math.random() * 3); i++) {
