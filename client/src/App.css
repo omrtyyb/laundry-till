@@ -1,0 +1,2221 @@
+main {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+}
+
+/* ---------- Buttons: one style for the whole app ----------
+   Every button is rounded, bold, and presses down slightly when clicked.
+   - Normal buttons (Cancel, Back, Admin...) are white with a grey border.
+   - Main action buttons (Save, Sell, Confirm, Search...) are green:
+     any submit button, or a button with class "confirm-button".
+   - Big coloured tiles (till buttons, products, admin menu) keep their colours
+     but share the same rounded corners and press effect. */
+:root {
+  --button-radius: 12px;
+  --button-green: #15803d;
+
+  /* ---------- One colour for each kind of money, used everywhere ----------
+     The till buttons, the activity list, pop-ups, the Admin totals, ticket lists and
+     charts all use these, so dry cleaning always looks the same. Each kind has a strong
+     colour (chart bars, borders, tags), a light background and a dark text colour.
+     The chart colours in admin/chartColors.js must match the strong ones. */
+  --dry-cleaning: #7c3aed; /* purple */
+  --dry-cleaning-bg: #ede9fe;
+  --dry-cleaning-text: #5b21b6;
+  --service-wash: #0891b2; /* teal */
+  --service-wash-bg: #cffafe;
+  --service-wash-text: #155e75;
+  --products: #16a34a; /* green: soap, softener, bags... */
+  --products-bg: #dcfce7;
+  --products-text: #166534;
+  --machine-coins: #2563eb; /* blue: money from the washers and dryers, Money In */
+  --machine-coins-bg: #dbeafe;
+  --machine-coins-text: #1e40af;
+  --spending: #d97706; /* amber: money taken out of the till */
+  --spending-bg: #fef3c7;
+  --spending-text: #92400e;
+  /* Cancelled tickets are red, whatever kind they are */
+  --cancelled-bg: #fecaca;
+  --cancelled-text: #7f1d1d;
+}
+
+button {
+  font: inherit;
+  font-size: 18px;
+  font-weight: 600;
+  padding: 12px 24px;
+  border: 2px solid #cbd5e1;
+  border-radius: var(--button-radius);
+  background: #fff;
+  color: #1f2937;
+  cursor: pointer;
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.12);
+  transition:
+    background 0.15s,
+    filter 0.15s;
+}
+
+/* Hover makes any button a little darker, keeping its own colour */
+button:hover {
+  filter: brightness(0.94);
+}
+
+button:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.12);
+}
+
+button:focus-visible {
+  outline: 3px solid #93c5fd;
+  outline-offset: 2px;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Red buttons for actions that undo something, e.g. Cancel ticket */
+.danger-button {
+  border-color: #b91c1c;
+  background: #b91c1c;
+  color: #fff;
+}
+
+/* WhatsApp's own green, so staff spot it */
+.whatsapp-button {
+  border-color: #128c7e;
+  background: #128c7e;
+  color: #fff;
+}
+
+button[type="submit"],
+.confirm-button {
+  border-color: var(--button-green);
+  background: var(--button-green);
+  color: #fff;
+}
+
+.till {
+  height: 100vh;
+  overflow: hidden;
+  justify-content: flex-start;
+  gap: 16px;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.till header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.till h1 {
+  margin: 0;
+}
+
+.till-body {
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  display: flex;
+  gap: 16px;
+}
+
+.till-buttons {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.till-buttons button {
+  font-size: 28px;
+  font-weight: 600;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  min-height: 0;
+  border: none;
+  border-radius: 20px;
+}
+
+.till-buttons svg {
+  width: 35%;
+  max-width: 120px;
+  max-height: 50%;
+}
+
+.coin-in {
+  background: var(--machine-coins-bg);
+  color: var(--machine-coins-text);
+}
+
+.dry-cleaning {
+  background: var(--dry-cleaning-bg);
+  color: var(--dry-cleaning-text);
+}
+
+.soap {
+  background: var(--products-bg);
+  color: var(--products-text);
+}
+
+.spend-coin {
+  background: var(--spending-bg);
+  color: var(--spending-text);
+}
+
+.service-wash {
+  background: var(--service-wash-bg);
+  color: var(--service-wash-text);
+}
+
+/* The Cash Drawer button: neutral grey, as it is about all the money */
+.cash-drawer-button {
+  background: #e5e7eb;
+  color: #1f2937;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.ticket-form {
+  width: min(480px, 90vw);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px;
+  border-radius: 20px;
+  background: #fff;
+  color: #111;
+}
+
+.ticket-form h2 {
+  margin: 0;
+}
+
+.ticket-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.ticket-form input,
+.ticket-form select,
+.ticket-form textarea {
+  font: inherit;
+  font-weight: 400;
+  padding: 10px;
+}
+
+.ticket-form .checkbox-label {
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+.ticket-form .checkbox-label input {
+  width: 22px;
+  height: 22px;
+}
+
+/* A row of buttons at the bottom of a form or pop-up, on the right. They move onto a
+   second line rather than squash or spill out when there isn't room, and the buttons
+   in a line are all the same height. */
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: stretch;
+  gap: 12px;
+}
+
+.form-actions button {
+  text-align: center;
+}
+
+/* Several actions on one item (e.g. a ticket's Mark as paid, Cancel, Print, Close):
+   a grid of equal buttons, two to a row; an odd one out at the end takes the whole row */
+.action-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.action-grid button {
+  min-height: 56px;
+  padding: 10px 16px;
+  text-align: center;
+}
+
+.action-grid > :last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
+
+.product-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.product-buttons button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 20px;
+  font-size: 24px;
+  border: none;
+  background: #dcfce7;
+  color: #166534;
+}
+
+.product-buttons button span {
+  font-size: 18px;
+  font-weight: 400;
+}
+
+.ticket-form p {
+  margin: 0;
+  font-size: 18px;
+}
+
+.activity-sidebar {
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 12px;
+  border-radius: 20px;
+  background: #f8fafc;
+  color: #111;
+  box-sizing: border-box;
+}
+
+.activity-sidebar h2 {
+  margin: 0 0 12px;
+  font-size: 22px;
+}
+
+/* The list scrolls inside the sidebar; the page itself doesn't scroll */
+.activity-sidebar ul {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.activity-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.activity-row:hover {
+  filter: brightness(0.95);
+}
+
+.activity-text {
+  font-weight: 600;
+}
+
+.activity-details {
+  font-size: 14px;
+}
+
+/* Each kind of row in its own colour (see :root), with a strong stripe on the left */
+.activity-row.dryCleaning,
+.activity-row.dryCleaningCollected {
+  background: var(--dry-cleaning-bg);
+  color: var(--dry-cleaning-text);
+  border-left: 6px solid var(--dry-cleaning);
+}
+
+.activity-row.serviceWash,
+.activity-row.serviceWashCollected {
+  background: var(--service-wash-bg);
+  color: var(--service-wash-text);
+  border-left: 6px solid var(--service-wash);
+}
+
+.activity-row.sale {
+  background: var(--products-bg);
+  color: var(--products-text);
+  border-left: 6px solid var(--products);
+}
+
+/* Money collected from the washers and dryers (saved as a sale) */
+.activity-row.sale.machineCoins {
+  background: var(--machine-coins-bg);
+  color: var(--machine-coins-text);
+  border-left-color: var(--machine-coins);
+}
+
+.activity-row.spending {
+  background: var(--spending-bg);
+  color: var(--spending-text);
+  border-left: 6px solid var(--spending);
+}
+
+/* Cancelled tickets: red, whatever kind of ticket they are */
+.activity-row.cancelled {
+  background: var(--cancelled-bg);
+  color: var(--cancelled-text);
+}
+
+.admin {
+  justify-content: flex-start;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.admin header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.admin h1 {
+  margin: 0;
+}
+
+.summary {
+  width: min(560px, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.summary h2 {
+  margin: 0 0 8px;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-radius: 12px;
+  font-size: 20px;
+}
+
+.summary-row.income {
+  background: #dcfce7;
+  color: #14532d;
+  font-weight: 600;
+}
+
+.summary-row.sub-row {
+  margin-left: 24px;
+  padding: 6px 16px;
+  font-size: 16px;
+  color: #166534;
+}
+
+.summary-row.spending {
+  background: var(--spending-bg);
+  color: var(--spending-text);
+  font-weight: 600;
+}
+
+/* Admin totals: each kind of income in its own colour */
+.summary-row.income.dryCleaning {
+  background: var(--dry-cleaning-bg);
+  color: var(--dry-cleaning-text);
+}
+
+.summary-row.income.serviceWash {
+  background: var(--service-wash-bg);
+  color: var(--service-wash-text);
+}
+
+.summary-row.income.products {
+  background: var(--products-bg);
+  color: var(--products-text);
+}
+
+.summary-row.income.machineCoins {
+  background: var(--machine-coins-bg);
+  color: var(--machine-coins-text);
+}
+
+.summary-row.day-total {
+  margin-top: 8px;
+  background: #1f2937;
+  color: #fff;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.date-picker {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.date-picker input {
+  font: inherit;
+  font-weight: 400;
+  padding: 8px;
+}
+
+.takings {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.takings h2 {
+  margin: 0;
+}
+
+.takings label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.takings input {
+  width: 160px;
+  font: inherit;
+  font-weight: 400;
+  padding: 8px;
+}
+
+/* Card and cash are greys, so they aren't mixed up with the kinds of money above */
+.summary-row.cash {
+  background: #e2e8f0;
+  color: #1e293b;
+  font-weight: 600;
+}
+
+.takings .form-actions {
+  align-items: center;
+}
+
+.takings-message {
+  color: #166534;
+  font-size: 16px;
+}
+
+.summary-row.card {
+  background: #f1f5f9;
+  color: #334155;
+  font-weight: 600;
+}
+
+.takings-error {
+  margin: 0;
+  color: #b91c1c;
+}
+
+.confirm-box {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: #fff7ed;
+  border: 2px solid #fb923c;
+}
+
+.confirm-box p {
+  margin: 0;
+}
+
+.search-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.search-row input {
+  flex: 1;
+  font: inherit;
+  padding: 10px;
+}
+
+.found-ticket {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: #f1f5f9;
+}
+
+.found-ticket p {
+  margin: 0;
+}
+
+.money-in-message {
+  width: 100%;
+  margin: 0;
+  color: #166534;
+  font-weight: 600;
+}
+
+.activity-id {
+  font-size: 12px;
+  opacity: 0.75;
+}
+
+.activity-empty {
+  margin: 0;
+  color: #64748b;
+}
+
+.admin-body {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.admin-menu {
+  width: 260px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: sticky;
+  top: 16px;
+}
+
+.admin-menu button {
+  text-align: left;
+  padding: 14px 16px;
+}
+
+.admin-menu button.selected {
+  border-color: var(--button-green);
+  background: var(--button-green);
+  color: #fff;
+}
+
+.admin-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+/* ---------- Admin reports ---------- */
+.report {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.report h2 {
+  margin: 0;
+}
+
+.report-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.report-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: #f1f5f9;
+}
+
+.report-card strong {
+  font-size: 28px;
+}
+
+.report-card.overdue {
+  background: #fee2e2;
+  color: #7f1d1d;
+}
+
+.report-card.owed {
+  background: #fef3c7;
+  color: #78350f;
+}
+
+.report-table-wrap {
+  overflow-x: auto;
+}
+
+.report-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 16px;
+}
+
+.report-table th,
+.report-table td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid #e2e8f0;
+  white-space: nowrap;
+}
+
+.report-table th {
+  background: #f8fafc;
+  font-weight: 600;
+}
+
+/* Tickets past their pickup day */
+.report-table tr.overdue td {
+  background: #fee2e2;
+  color: #7f1d1d;
+}
+
+.badge {
+  margin-left: 8px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #b91c1c;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Clickable column headings in report tables: a small version of the normal button */
+.sort-button {
+  padding: 4px 10px;
+  font-size: 16px;
+  box-shadow: none;
+}
+
+.sort-button.active {
+  border-color: var(--button-green);
+  background: var(--button-green);
+  color: #fff;
+}
+
+/* ---------- Last 7 / 30 days chart ---------- */
+.report-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Tab buttons keep their label on one line */
+.report-controls .sort-button {
+  white-space: nowrap;
+}
+
+.chart-legend,
+.chart-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  font-size: 15px;
+  color: #334155;
+}
+
+.chart-legend i,
+.chart-details i {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  vertical-align: -1px;
+}
+
+.chart-legend .legend-line {
+  width: 20px;
+  height: 0;
+  border-top: 2px dashed #52514e;
+  border-radius: 0;
+  vertical-align: 4px;
+}
+
+.chart-details {
+  min-height: 24px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: #f8fafc;
+}
+
+.days-chart {
+  width: 100%;
+  height: auto;
+  background: #fcfcfb;
+  border-radius: 12px;
+}
+
+.days-chart .grid-line {
+  stroke: #e2e8f0;
+  stroke-width: 1;
+}
+
+.days-chart .zero-line {
+  stroke: #64748b;
+  stroke-width: 1.5;
+}
+
+.days-chart .axis-label {
+  font-size: 13px;
+  fill: #52514e;
+}
+
+.days-chart .axis-label.end {
+  text-anchor: end;
+}
+
+.days-chart .axis-label.middle {
+  text-anchor: middle;
+}
+
+/* Fade the other days a little while one is pointed at */
+.days-chart .bar rect {
+  transition: opacity 0.15s;
+}
+
+.days-chart:hover .bar:not(.hovered) rect {
+  opacity: 0.55;
+}
+
+.days-chart .week-before-line {
+  fill: none;
+  stroke: #52514e;
+  stroke-width: 2;
+  stroke-dasharray: 6 4;
+  pointer-events: none;
+}
+
+.days-chart .week-before-dot {
+  fill: #fcfcfb;
+  stroke: #52514e;
+  stroke-width: 2;
+}
+
+/* The chart and its small mouse label sit in this box */
+.chart-box {
+  position: relative;
+}
+
+/* Small label next to the mouse, e.g. "Spending: −£34.00" */
+.chart-tip {
+  position: absolute;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: #1f2937;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* ---------- Monthly summary, money sources, days list, customers ---------- */
+.report h3 {
+  margin: 8px 0 0;
+}
+
+.report-cards.two {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.report-card small {
+  color: #475569;
+}
+
+.report-card.dark {
+  background: #1f2937;
+  color: #fff;
+}
+
+.report-card.good {
+  background: #dcfce7;
+  color: #14532d;
+}
+
+.report-note {
+  margin: 0;
+  color: #475569;
+}
+
+.report-warning {
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: #fef3c7;
+  color: #78350f;
+  font-weight: 600;
+}
+
+/* A small coloured square next to a label, matching the chart colours */
+.swatch {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  vertical-align: -1px;
+}
+
+.date-picker.small {
+  font-size: 16px;
+  margin-left: 8px;
+}
+
+/* Where the money comes from: one long bar split into shares */
+.share-bar {
+  display: flex;
+  gap: 2px;
+  height: 56px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fcfcfb;
+}
+
+.share-part {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 4px;
+  font-weight: 700;
+  color: #0b0b0b;
+}
+
+.share-part span {
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.85);
+  font-size: 14px;
+}
+
+.summary-row.share-row {
+  background: #f8fafc;
+}
+
+/* Days list: rows can be clicked to open the day */
+.report-table.clickable tbody tr {
+  cursor: pointer;
+}
+
+.report-table.clickable tbody tr:hover td {
+  background: #f1f5f9;
+}
+
+.report-table tr.flagged td {
+  background: #fef3c7;
+}
+
+.badge.warning {
+  margin-left: 0;
+  background: #b45309;
+}
+
+/* ---------- Admin password ---------- */
+.login-form,
+.security-form {
+  align-self: center;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+
+.security-form {
+  align-self: flex-start;
+}
+
+.ticket-form h3 {
+  margin: 0;
+}
+
+/* Log out sits at the far right of the Admin header */
+.admin header .log-out {
+  margin-left: auto;
+}
+
+/* ---------- Activity details pop-up ---------- */
+.details-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+}
+
+.details-list div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.details-list dt {
+  color: #475569;
+}
+
+.details-list dd {
+  margin: 0;
+  font-weight: 600;
+  text-align: right;
+}
+
+.activity-row:focus-visible {
+  outline: 3px solid #93c5fd;
+  outline-offset: 2px;
+}
+
+/* Search box at the top of the till's activity list */
+.activity-search {
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  font: inherit;
+  border: 2px solid #cbd5e1;
+  border-radius: 12px;
+}
+
+/* The "Till activity" heading is a button that clears the search; it looks like a heading */
+.activity-heading {
+  padding: 0;
+  border: none;
+  background: none;
+  box-shadow: none;
+  font-size: 22px;
+  font-weight: 700;
+  color: inherit;
+}
+
+.activity-heading:hover {
+  filter: none;
+  text-decoration: underline;
+}
+
+.activity-heading:active {
+  transform: none;
+}
+
+/* ---------- Staff ---------- */
+/* Who is working, at the right of the till header */
+.staff-bar {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 18px;
+}
+
+/* Name + PIN + button on one line in Admin → Staff */
+.staff-add {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.staff-add input {
+  flex: 1;
+  min-width: 160px;
+  font: inherit;
+  padding: 10px;
+}
+
+/* Edit / Remove buttons at the end of a row: the cell stays as narrow as its buttons
+   (a table cell can't be a flex box without breaking the table's columns) */
+.report-table td.row-actions {
+  width: 1%;
+  text-align: right;
+}
+
+.report-table td.row-actions button + button {
+  margin-left: 8px;
+}
+
+.report-table tr.removed td {
+  color: #94a3b8;
+}
+
+/* ======================================================================
+   Touch-friendly sizes
+   Every button and box is at least 48px tall, big enough for a finger.
+   ====================================================================== */
+button,
+input,
+select,
+textarea {
+  min-height: 48px;
+  box-sizing: border-box;
+}
+
+input,
+select,
+textarea {
+  font-size: 18px;
+}
+
+input[type="checkbox"] {
+  min-height: 0;
+  width: 28px;
+  height: 28px;
+}
+
+.ticket-form .checkbox-label input {
+  width: 28px;
+  height: 28px;
+}
+
+.sort-button {
+  min-height: 44px;
+  padding: 8px 14px;
+}
+
+.activity-row {
+  padding: 12px 14px;
+}
+
+/* Pop-ups never grow taller than the screen; long ones scroll inside */
+.overlay {
+  padding: 16px;
+  box-sizing: border-box;
+  z-index: 10;
+}
+
+.ticket-form {
+  max-height: 100%;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+/* ---------- On-screen number pad (touchscreens) ---------- */
+.number-pad {
+  position: fixed;
+  left: 50%;
+  bottom: 12px;
+  transform: translateX(-50%);
+  z-index: 100;
+  width: min(380px, calc(100vw - 24px));
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 20px;
+  background: #1f2937;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.number-pad-display {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: #fff;
+  color: #475569;
+  font-size: 15px;
+}
+
+.number-pad-display strong {
+  color: #111;
+  font-size: 26px;
+}
+
+.number-pad-keys {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.number-pad-keys button {
+  min-height: 60px;
+  font-size: 26px;
+}
+
+.number-pad-keys button.unused {
+  visibility: hidden;
+}
+
+.number-pad-actions {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 8px;
+}
+
+.number-pad-actions button {
+  min-height: 56px;
+}
+
+/* While the pad is open, pop-ups move up so the pad doesn't cover them */
+.number-pad-open .overlay {
+  align-items: flex-start;
+  padding-bottom: 400px;
+}
+
+/* Pages that scroll (like Admin) get room at the bottom; the till screen fits one screen */
+.number-pad-open main:not(.till) {
+  padding-bottom: 400px;
+}
+
+/* ======================================================================
+   Phone layout (screens up to 700px wide)
+   ====================================================================== */
+@media (max-width: 700px) {
+  main {
+    gap: 16px;
+  }
+
+  /* The till page scrolls on a phone instead of fitting one screen */
+  .till {
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+    padding: 12px;
+  }
+
+  .till header,
+  .admin header {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .till h1,
+  .admin h1 {
+    font-size: 26px;
+  }
+
+  .staff-bar {
+    font-size: 16px;
+  }
+
+  .till-body {
+    flex-direction: column;
+  }
+
+  /* Two big buttons per row; the last one takes the whole row */
+  .till-buttons {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: none;
+    grid-auto-rows: minmax(130px, auto);
+    gap: 12px;
+  }
+
+  .till-buttons button {
+    font-size: 18px;
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .till-buttons button:last-child {
+    grid-column: span 2;
+  }
+
+  .till-buttons svg {
+    width: 48px;
+    max-height: 48px;
+  }
+
+  .activity-sidebar {
+    width: 100%;
+    max-height: 70vh;
+  }
+
+  /* Pop-ups slide up from the bottom and use the full width */
+  .overlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .ticket-form {
+    width: 100%;
+    max-height: 92vh;
+    padding: 20px 16px;
+    border-radius: 20px 20px 0 0;
+  }
+
+  .form-actions {
+    flex-wrap: wrap;
+  }
+
+  .form-actions button {
+    flex: 1;
+  }
+
+  .product-buttons button {
+    font-size: 20px;
+    padding: 16px 8px;
+  }
+
+  /* Admin: the menu becomes a row of buttons you can swipe sideways */
+  .admin {
+    padding: 12px;
+  }
+
+  .admin-body {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .admin-menu {
+    width: 100%;
+    flex-direction: row;
+    overflow-x: auto;
+    position: static;
+    padding-bottom: 4px;
+  }
+
+  .admin-menu button {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  .admin-content {
+    width: 100%;
+  }
+
+  .date-picker {
+    flex-wrap: wrap;
+    font-size: 17px;
+  }
+
+  .report-controls {
+    flex-wrap: wrap;
+  }
+
+  .report-cards,
+  .report-cards.two {
+    grid-template-columns: 1fr;
+  }
+
+  .summary-row {
+    font-size: 17px;
+    padding: 12px;
+  }
+
+  .summary-row.day-total {
+    font-size: 20px;
+  }
+
+  .takings label {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0;
+  }
+
+  .takings input {
+    width: 100%;
+  }
+
+  .report-table {
+    font-size: 15px;
+  }
+
+  .chart-legend,
+  .chart-details {
+    font-size: 14px;
+  }
+}
+
+/* ---------- Customer suggestions on a new ticket ---------- */
+.customer-suggestions {
+  list-style: none;
+  margin: -8px 0 0;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #f8fafc;
+}
+
+.customer-suggestions button {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2px 12px;
+  text-align: left;
+  padding: 10px 12px;
+  box-shadow: none;
+}
+
+.customer-suggestions small {
+  grid-column: 1 / -1;
+  font-weight: 400;
+  color: #475569;
+}
+
+/* ---------- 2-second pop-up messages ---------- */
+.toast {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 200;
+  max-width: calc(100vw - 32px);
+  padding: 16px 24px;
+  border-radius: 14px;
+  font-size: 20px;
+  font-weight: 600;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+  animation: toast-in 0.2s ease-out;
+}
+
+/* Saved: green */
+.toast.success {
+  background: #dcfce7;
+  color: #14532d;
+  border: 2px solid #16a34a;
+}
+
+/* Could not save: red */
+.toast.error {
+  background: #fee2e2;
+  color: #7f1d1d;
+  border: 2px solid #dc2626;
+}
+
+/* Slides down a little as it appears */
+@keyframes toast-in {
+  from {
+    transform: translate(-50%, -10px);
+  }
+}
+
+/* Edit history: the details can be long, so they wrap */
+.history-table td:nth-child(3) {
+  white-space: normal;
+  min-width: 260px;
+}
+
+/* "Still owed on collection" under the deposit box */
+.owed-note {
+  margin: -8px 0 0;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: #fef3c7;
+  color: #78350f;
+}
+
+/* ---------- Price list picker on a dry cleaning ticket ---------- */
+.price-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.price-search {
+  flex: 1;
+  min-width: 140px;
+  padding: 8px 12px;
+  font: inherit;
+}
+
+.price-groups {
+  max-height: 320px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-right: 4px;
+}
+
+.price-groups h4 {
+  margin: 0 0 6px;
+  color: #475569;
+}
+
+.price-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 6px;
+}
+
+.price-items button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 8px 10px;
+  font-size: 14px;
+  text-align: left;
+  border-color: #c7d2fe;
+  background: #eef2ff;
+  color: #1e1b4b;
+  box-shadow: none;
+}
+
+.price-items button small {
+  font-size: 13px;
+  font-weight: 400;
+  color: #3730a3;
+}
+
+.range-quick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.range-quick input {
+  width: 120px;
+  font: inherit;
+  padding: 8px;
+}
+
+.picked-items {
+  list-style: none;
+  margin: 0;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-radius: 12px;
+  background: #f0fdf4;
+}
+
+.picked-items li {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.picked-items small {
+  color: #475569;
+}
+
+.picked-buttons {
+  display: flex;
+  gap: 4px;
+}
+
+.picked-buttons button {
+  min-width: 44px;
+}
+
+/* Items list in the ticket details pop-up */
+.ticket-items-list {
+  margin: 0;
+  padding-left: 18px;
+}
+
+/* ---------- Admin → Price list ---------- */
+.price-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.price-form h3 {
+  margin: 0;
+}
+
+.price-boxes {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.price-box {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.price-box input {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  font: inherit;
+  font-weight: 400;
+  padding: 8px;
+}
+
+@media (max-width: 700px) {
+  .price-boxes {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* A link that looks like a green button, e.g. Download PDF */
+.download-button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 0 20px;
+  border-radius: var(--button-radius);
+  background: var(--button-green);
+  color: #fff;
+  font-size: 18px;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.12);
+}
+
+.download-button:hover {
+  filter: brightness(0.94);
+}
+
+/* Long text in a table cell (descriptions, item names) wraps instead of pushing
+   the table wider than the page */
+.report-table td.wrap {
+  white-space: normal;
+  min-width: 180px;
+}
+
+.all-tickets tr.cancelled-row td {
+  background: #fee2e2;
+  color: #7f1d1d;
+}
+
+/* ---------- Admin → Printer ---------- */
+.ticket-form label small {
+  font-size: 14px;
+  font-weight: 400;
+  color: #555;
+}
+
+.link-button {
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  background: none;
+  color: #2563eb;
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* Admin → Tickets: search box and the pop-up that edits a ticket */
+.ticket-search {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.ticket-editor {
+  width: min(640px, 94vw);
+  max-height: 90vh;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.ticket-editor h3 {
+  margin: 0;
+}
+
+.ticket-editor .editor-note {
+  font-size: 15px;
+  color: #475569;
+}
+
+.editor-item {
+  display: grid;
+  grid-template-columns: 1fr 120px 70px 90px auto;
+  gap: 8px;
+}
+
+.editor-item-actions {
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+
+.editor-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 560px) {
+  .editor-item {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.new-ticket-actions {
+  justify-content: flex-start;
+  margin: 8px 0;
+}
+
+/* The load size picked on a service wash ticket */
+.price-items button.active {
+  border-color: #4338ca;
+  background: #c7d2fe;
+  outline: 2px solid #4338ca;
+}
+
+/* ---------- The kind's colour on pop-ups and ticket lists ---------- */
+
+/* A coloured band along the top of each pop-up, e.g. purple for a dry cleaning ticket */
+.ticket-form.dryCleaning {
+  border-top: 10px solid var(--dry-cleaning);
+}
+
+.ticket-form.serviceWash {
+  border-top: 10px solid var(--service-wash);
+}
+
+.ticket-form.products {
+  border-top: 10px solid var(--products);
+}
+
+.ticket-form.machineCoins {
+  border-top: 10px solid var(--machine-coins);
+}
+
+.ticket-form.spending {
+  border-top: 10px solid var(--spending);
+}
+
+/* A small coloured label, e.g. "Dry cleaning" in the Admin ticket lists */
+.kind-tag {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.kind-tag.dryCleaning {
+  background: var(--dry-cleaning-bg);
+  color: var(--dry-cleaning-text);
+}
+
+.kind-tag.serviceWash {
+  background: var(--service-wash-bg);
+  color: var(--service-wash-text);
+}
+
+/* The Dry cleaning and Service wash tabs in Admin → Tickets, when chosen */
+.sort-button.active.dryCleaning {
+  background: var(--dry-cleaning);
+  border-color: var(--dry-cleaning);
+  color: #fff;
+}
+
+.sort-button.active.serviceWash {
+  background: var(--service-wash);
+  border-color: var(--service-wash);
+  color: #fff;
+}
+
+/* ---------- Printing: a thin moving line along the bottom of the screen ---------- */
+.printing-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  overflow: hidden;
+  background: rgba(21, 128, 61, 0.15);
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.printing-bar span {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 30%;
+  background: var(--button-green);
+  animation: printing-slide 1.1s ease-in-out infinite;
+}
+
+@keyframes printing-slide {
+  from {
+    left: -30%;
+  }
+  to {
+    left: 100%;
+  }
+}
+
+/* People who turn off motion see a steady line instead */
+@media (prefers-reduced-motion: reduce) {
+  .printing-bar span {
+    width: 100%;
+    left: 0;
+    animation: none;
+  }
+}
+
+/* Admin → Tickets → Ticket summary: the From / Until boxes and the PDF button */
+.summary-times {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+  margin: 12px 0;
+}
+
+.summary-times label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-weight: 600;
+}
+
+.summary-times input {
+  font: inherit;
+  font-weight: 400;
+  padding: 8px;
+}
+
+.report-table tfoot .totals-row td {
+  font-weight: 700;
+  background: #1f2937;
+  color: #fff;
+}
+
+/* Admin → Printer → Customise the receipt: the boxes, and a preview beside them */
+.receipt-custom {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.receipt-custom-boxes {
+  flex: 1 1 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.receipt-custom-boxes textarea {
+  font: inherit;
+  font-weight: 400;
+  padding: 10px;
+  resize: vertical;
+}
+
+.receipt-preview-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Looks like a strip of receipt paper */
+.receipt-preview {
+  box-sizing: content-box;
+  padding: 16px 12px;
+  background: #fff;
+  border: 1px solid #cbd5e1;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  font-family: "Courier New", monospace;
+  font-size: 13px;
+  line-height: 1.35;
+  color: #000;
+  white-space: pre;
+  overflow: hidden;
+}
+
+.receipt-preview .bold {
+  font-weight: 700;
+}
+
+/* Big text is twice as wide and tall, like on the printer */
+.receipt-preview .big {
+  font-weight: 700;
+  font-size: 26px;
+  line-height: 1.2;
+}
+
+/* ---------- Cash drawer: opening float and end of day count ---------- */
+.ticket-form.cash-drawer {
+  background: #f3f4f6;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.ticket-form.cash-drawer h3 {
+  margin: 8px 0 0;
+}
+
+.cash-count-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.cash-count-mode {
+  display: flex;
+  gap: 8px;
+}
+
+.cash-count-mode button {
+  flex: 1;
+  background: #fff;
+  border: 2px solid #cbd5e1;
+  color: #1f2937;
+}
+
+.cash-count-mode button.chosen {
+  border-color: #1f2937;
+  background: #1f2937;
+  color: #fff;
+}
+
+.coin-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 8px;
+}
+
+.coin-grid label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.coin-grid input {
+  width: 100%;
+  min-width: 0;
+}
+
+.coin-grid .coin-total {
+  grid-column: 1 / -1;
+  margin: 4px 0 0;
+  font-size: 20px;
+}
+
+.cash-result {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cash-result .summary-row {
+  background: #fff;
+  padding: 8px 14px;
+  font-size: 18px;
+}
+
+.cash-result .summary-row.sub-row {
+  background: none;
+  color: #374151;
+}
+
+.summary-row.cash-diff {
+  font-weight: 700;
+}
+
+.summary-row.cash-diff.ok,
+.cash-diff-text.ok {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.summary-row.cash-diff.off,
+.cash-diff-text.off {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.cash-diff-text {
+  padding: 2px 8px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+/* Long labels wrap instead of squashing their tick box, and the garment tag options stay
+   inside the Printer form */
+.ticket-form .checkbox-label input {
+  flex-shrink: 0;
+}
+
+.receipt-custom-boxes {
+  min-width: 0;
+}
+
+.receipt-custom-boxes select {
+  width: 100%;
+  min-width: 0;
+}
+
+/* Admin → Uncollected tickets: the "waiting" filters and the reminder buttons */
+.waiting-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0 4px;
+  font-weight: 600;
+}
+
+.reminder-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.reminder-cell small {
+  color: #475569;
+  white-space: nowrap;
+}
+
+/* Admin → Backups: the bar shown while "Back up now" is making a copy */
+.backup-progress {
+  display: grid;
+  gap: 6px;
+  margin: 12px 0;
+}
+
+.backup-progress-bar {
+  height: 14px;
+  border-radius: 7px;
+  background: #e2e8f0;
+  overflow: hidden;
+}
+
+.backup-progress-fill {
+  height: 100%;
+  background: var(--button-green);
+  border-radius: 7px;
+  transition: width 0.4s ease;
+}
+
+/* Admin → Backups: Download / Restore / Delete on each row, and the USB and background job lines */
+.backup-actions {
+  display: flex;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.backup-status {
+  color: #475569;
+}
+
+.backup-status-bad {
+  color: #b91c1c;
+}
+
+/* Admin → Customers: a customer's profile */
+.customer-profile-head {
+  display: grid;
+  gap: 6px;
+  justify-items: start;
+}
+
+.customer-profile-head h2 {
+  margin: 0;
+}
+
+.customer-note {
+  display: grid;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.customer-note textarea {
+  font: inherit;
+  font-weight: normal;
+  padding: 10px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  resize: vertical;
+}
+
+/* Admin → Loyalty rewards: one form per kind of ticket */
+.loyalty-rules {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.loyalty-rule {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.loyalty-rule h3 {
+  margin: 0;
+}
+
+.loyalty-sentence {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.loyalty-sentence.off {
+  opacity: 0.5;
+}
+
+.loyalty-sentence input {
+  width: 80px;
+  font: inherit;
+  padding: 6px 8px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+}
+
+.loyalty-percent-choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* New ticket form: the loyalty reward when it's due, or how many tickets to go */
+.loyalty-offer {
+  display: grid;
+  gap: 8px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--products-bg);
+  color: var(--products-text);
+  border: 2px solid var(--products);
+}
+
+.loyalty-progress {
+  margin: 0;
+  color: #475569;
+}
+
+.customer-loyalty p {
+  margin: 4px 0;
+}
+
+.loyalty-given {
+  color: var(--products-text);
+  font-weight: 600;
+}
+
+/* Admin → Customers profile: dry cleaning and service wash side by side */
+.customer-kinds {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+}
+
+.customer-kind {
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 2px solid;
+}
+
+.customer-kind.dryCleaning {
+  border-color: var(--dry-cleaning-bg);
+}
+
+.customer-kind.serviceWash {
+  border-color: var(--service-wash-bg);
+}
+
+.customer-kind dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 16px;
+  margin: 10px 0 0;
+}
+
+.customer-kind dt {
+  color: #475569;
+}
+
+.customer-kind dd {
+  margin: 0;
+  font-weight: 600;
+  text-align: right;
+}
+
+/* New ticket form: the Discount box with its % / £ choice beside it */
+.discount-field {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.discount-field label {
+  flex: 1;
+}
+
+.discount-unit {
+  display: flex;
+  gap: 4px;
+}
+
+.discount-unit .sort-button {
+  min-width: 48px;
+  min-height: 44px;
+  font-size: 18px;
+}
+
+/* Admin → Export to Excel */
+.excel-export-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.excel-export-form label {
+  display: grid;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.excel-export-form input {
+  font: inherit;
+  padding: 8px 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+}
+
+.excel-sheets {
+  margin: 0;
+  padding-left: 20px;
+  display: grid;
+  gap: 4px;
+}

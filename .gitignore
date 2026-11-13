@@ -1,0 +1,25 @@
+node_modules
+.env
+.env.*
+!.env.example
+.DS_Store
+
+# Till database, its -wal/-shm files and all backups (real shop data, staff PINs, admin password)
+server/data/
+*.db
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+
+# Build output and logs
+client/dist
+dist
+*.log
+
+# Exported reports and spreadsheets
+*.xlsx
+*.xls
+*.csv
+*.pdf
+*.tgz

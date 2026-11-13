@@ -1,0 +1,7 @@
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  /* Always a white page with dark text, whatever the computer's light/dark setting */
+  background: #fff;
+  color: #111;
+}
