@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { pounds } from "../utils/money.js";
 import { CHART_PARTS, SPENDING_COLOR } from "./chartColors.js";
+import { loadJson } from "../utils/api.js";
 
 // Admin "Last 7 / 30 days chart": one bar per day, split by where the money came from
 export default function DaysChart() {
@@ -16,8 +17,7 @@ export default function DaysChart() {
   const chartBox = useRef(null);
 
   useEffect(() => {
-    fetch("/api/daily-chart?days=" + numberOfDays)
-      .then((response) => response.json())
+    loadJson("/api/daily-chart?days=" + numberOfDays)
       .then((data) => setDays(data));
   }, [numberOfDays]);
 

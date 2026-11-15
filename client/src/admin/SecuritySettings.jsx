@@ -2,6 +2,7 @@
 // Other browsers that were logged in are logged out; this one stays logged in.
 
 import { useState } from "react";
+import { request } from "../utils/api.js";
 
 const MIN_LENGTH = 8;
 
@@ -25,16 +26,14 @@ export default function SecuritySettings() {
             setError("The two new passwords are different");
             return;
           }
-          const response = await fetch("/api/admin/change-password", {
+          const { ok, data } = await request("/api/admin/change-password", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
+            body: {
               current_password: current,
               new_password: newPassword,
-            }),
+            },
           });
-          const data = await response.json();
-          if (response.ok) {
+          if (ok) {
             setMessage(
               "Password changed. Any other browser logged in as admin has been logged out.",
             );

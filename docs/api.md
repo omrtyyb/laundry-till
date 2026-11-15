@@ -1,6 +1,6 @@
 # API reference
 
-The server answers JSON on `http://localhost:3001/api/...`. The React app calls it with `fetch`;
+The server answers JSON on `http://localhost:3001/api/...`. The React app calls it through `client/src/utils/api.js`;
 in development Vite forwards `/api` to the server.
 
 ## Conventions

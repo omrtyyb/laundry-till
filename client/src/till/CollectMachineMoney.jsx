@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { pounds } from "../utils/money.js";
+import { request } from "../utils/api.js";
 
 // Money from the washers and dryers: saved as a sale called "Washers Dryers Coins"
 export default function CollectMachineMoney() {
@@ -13,17 +14,15 @@ export default function CollectMachineMoney() {
       className="search-row"
       onSubmit={async (e) => {
         e.preventDefault();
-        const response = await fetch("/api/sales", {
+        const { ok, data } = await request("/api/sales", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
+          body: {
             item_name: "Washers Dryers Coins",
             unit_price: Number(amount),
             quantity: 1,
-          }),
+          },
         });
-        const data = await response.json();
-        if (response.ok) {
+        if (ok) {
           setMessage(`Saved ${pounds(data.unit_price)} of machine coins.`);
           setAmount("");
         } else {

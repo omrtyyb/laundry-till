@@ -4,6 +4,8 @@
 
 import { useEffect, useState } from "react";
 import { showToast } from "../utils/toast.js";
+import { loadJson, request } from "../utils/api.js";
+import { ordinal } from "../utils/ordinal.js";
 
 const KINDS = [
   { kind: "dryCleaning", label: "Dry cleaning" },
@@ -16,8 +18,7 @@ export default function LoyaltyRewards() {
   const [rules, setRules] = useState(null);
 
   useEffect(() => {
-    fetch("/api/admin/loyalty")
-      .then((response) => response.json())
+    loadJson("/api/admin/loyalty")
       .then(setRules);
   }, []);
 
@@ -60,13 +61,11 @@ function RuleForm({ kind, label, rule, onSaved }) {
 
   const save = async (e) => {
     e.preventDefault();
-    const response = await fetch("/api/admin/loyalty/" + kind, {
+    const { ok, data: result } = await request("/api/admin/loyalty/" + kind, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ every: Number(every), percent: Number(percent), active }),
+      body: { every: Number(every), percent: Number(percent), active },
     });
-    const result = await response.json();
-    if (!response.ok) return showToast(result.error, "error");
+    if (!ok) return showToast(result.error, "error");
     onSaved(result);
     showToast(`${label} reward saved`);
   };
@@ -129,11 +128,4 @@ function RuleForm({ kind, label, rule, onSaved }) {
       </div>
     </form>
   );
-}
-
-// 1 → "1st", 2 → "2nd", 10 → "10th", 22 → "22nd"
-export function ordinal(n) {
-  const teen = n % 100 >= 11 && n % 100 <= 13;
-  const suffix = teen ? "th" : { 1: "st", 2: "nd", 3: "rd" }[n % 10] || "th";
-  return n + suffix;
 }

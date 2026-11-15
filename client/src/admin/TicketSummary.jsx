@@ -6,6 +6,7 @@
 import { useEffect, useState } from "react";
 import { pounds } from "../utils/money.js";
 import { todayString } from "../utils/dates.js";
+import { request } from "../utils/api.js";
 
 const KINDS = [
   { id: "dryCleaning", label: "Dry cleaning" },
@@ -44,10 +45,9 @@ export default function TicketSummary() {
   // Load the summary again whenever the kind or the times change
   useEffect(() => {
     let current = true;
-    fetch("/api/reports/ticket-summary?" + query).then(async (response) => {
-      const data = await response.json();
+    request("/api/reports/ticket-summary?" + query).then(({ ok, data }) => {
       if (!current) return;
-      if (response.ok) {
+      if (ok) {
         setSummary(data);
         setError(null);
       } else {

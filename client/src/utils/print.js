@@ -5,6 +5,7 @@
 
 import JsBarcode from "jsbarcode";
 import { showToast } from "./toast.js";
+import { request } from "./api.js";
 
 // How many print jobs are on their way. PrintingBar.jsx shows a thin moving line at the
 // bottom of the screen while this is above 0; each change is sent as a "printing" event.
@@ -18,13 +19,8 @@ function setPrinting(change) {
 export async function sendToPrinter(url, body) {
   setPrinting(+1);
   try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body || {}),
-    });
-    const data = await response.json();
-    if (!response.ok) {
+    const { ok, data } = await request(url, { method: "POST", body: body || {} });
+    if (!ok) {
       showToast(`Could not print: ${data.error}`, "error");
       return false;
     }

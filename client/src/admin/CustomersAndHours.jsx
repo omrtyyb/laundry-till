@@ -4,13 +4,13 @@
 import { useEffect, useState } from "react";
 import { shortDayName } from "../utils/dates.js";
 import { pounds } from "../utils/money.js";
+import { loadJson } from "../utils/api.js";
 
 export default function CustomersAndHours() {
   const [report, setReport] = useState(null);
 
   useEffect(() => {
-    fetch("/api/reports/customers")
-      .then((response) => response.json())
+    loadJson("/api/reports/customers")
       .then((data) => setReport(data));
   }, []);
 

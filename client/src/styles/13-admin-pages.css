@@ -1,0 +1,262 @@
+/* Later additions: Uncollected tickets, Backups, Customers, Loyalty rewards, the Discount box and Export to Excel */
+
+/* Long labels wrap instead of squashing their tick box, and the garment tag options stay
+   inside the Printer form */
+.ticket-form .checkbox-label input {
+  flex-shrink: 0;
+}
+
+.receipt-custom-boxes {
+  min-width: 0;
+}
+
+.receipt-custom-boxes select {
+  width: 100%;
+  min-width: 0;
+}
+
+/* Admin → Uncollected tickets: the "waiting" filters and the reminder buttons */
+.waiting-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0 4px;
+  font-weight: 600;
+}
+
+.reminder-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.reminder-cell small {
+  color: #475569;
+  white-space: nowrap;
+}
+
+/* Admin → Backups: the bar shown while "Back up now" is making a copy */
+.backup-progress {
+  display: grid;
+  gap: 6px;
+  margin: 12px 0;
+}
+
+.backup-progress-bar {
+  height: 14px;
+  border-radius: 7px;
+  background: #e2e8f0;
+  overflow: hidden;
+}
+
+.backup-progress-fill {
+  height: 100%;
+  background: var(--button-green);
+  border-radius: 7px;
+  transition: width 0.4s ease;
+}
+
+/* Admin → Backups: Download / Restore / Delete on each row, and the USB and background job lines */
+.backup-actions {
+  display: flex;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.backup-status {
+  color: #475569;
+}
+
+.backup-status-bad {
+  color: #b91c1c;
+}
+
+/* Admin → Customers: a customer's profile */
+.customer-profile-head {
+  display: grid;
+  gap: 6px;
+  justify-items: start;
+}
+
+.customer-profile-head h2 {
+  margin: 0;
+}
+
+.customer-note {
+  display: grid;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.customer-note textarea {
+  font: inherit;
+  font-weight: normal;
+  padding: 10px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  resize: vertical;
+}
+
+/* Admin → Loyalty rewards: one form per kind of ticket */
+.loyalty-rules {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.loyalty-rule {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.loyalty-rule h3 {
+  margin: 0;
+}
+
+.loyalty-sentence {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.loyalty-sentence.off {
+  opacity: 0.5;
+}
+
+.loyalty-sentence input {
+  width: 80px;
+  font: inherit;
+  padding: 6px 8px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+}
+
+.loyalty-percent-choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* New ticket form: the loyalty reward when it's due, or how many tickets to go */
+.loyalty-offer {
+  display: grid;
+  gap: 8px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--products-bg);
+  color: var(--products-text);
+  border: 2px solid var(--products);
+}
+
+.loyalty-progress {
+  margin: 0;
+  color: #475569;
+}
+
+.customer-loyalty p {
+  margin: 4px 0;
+}
+
+.loyalty-given {
+  color: var(--products-text);
+  font-weight: 600;
+}
+
+/* Admin → Customers profile: dry cleaning and service wash side by side */
+.customer-kinds {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+}
+
+.customer-kind {
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 2px solid;
+}
+
+.customer-kind.dryCleaning {
+  border-color: var(--dry-cleaning-bg);
+}
+
+.customer-kind.serviceWash {
+  border-color: var(--service-wash-bg);
+}
+
+.customer-kind dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 16px;
+  margin: 10px 0 0;
+}
+
+.customer-kind dt {
+  color: #475569;
+}
+
+.customer-kind dd {
+  margin: 0;
+  font-weight: 600;
+  text-align: right;
+}
+
+/* New ticket form: the Discount box with its % / £ choice beside it */
+.discount-field {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.discount-field label {
+  flex: 1;
+}
+
+.discount-unit {
+  display: flex;
+  gap: 4px;
+}
+
+.discount-unit .sort-button {
+  min-width: 48px;
+  min-height: 44px;
+  font-size: 18px;
+}
+
+/* Admin → Export to Excel */
+.excel-export-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.excel-export-form label {
+  display: grid;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.excel-export-form input {
+  font: inherit;
+  padding: 8px 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+}
+
+.excel-sheets {
+  margin: 0;
+  padding-left: 20px;
+  display: grid;
+  gap: 4px;
+}

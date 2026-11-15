@@ -1,0 +1,99 @@
+/* Cash drawer: opening float and end of day count */
+
+/* ---------- Cash drawer: opening float and end of day count ---------- */
+.ticket-form.cash-drawer {
+  background: #f3f4f6;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.ticket-form.cash-drawer h3 {
+  margin: 8px 0 0;
+}
+
+.cash-count-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.cash-count-mode {
+  display: flex;
+  gap: 8px;
+}
+
+.cash-count-mode button {
+  flex: 1;
+  background: #fff;
+  border: 2px solid #cbd5e1;
+  color: #1f2937;
+}
+
+.cash-count-mode button.chosen {
+  border-color: #1f2937;
+  background: #1f2937;
+  color: #fff;
+}
+
+.coin-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 8px;
+}
+
+.coin-grid label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.coin-grid input {
+  width: 100%;
+  min-width: 0;
+}
+
+.coin-grid .coin-total {
+  grid-column: 1 / -1;
+  margin: 4px 0 0;
+  font-size: 20px;
+}
+
+.cash-result {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cash-result .summary-row {
+  background: #fff;
+  padding: 8px 14px;
+  font-size: 18px;
+}
+
+.cash-result .summary-row.sub-row {
+  background: none;
+  color: #374151;
+}
+
+.summary-row.cash-diff {
+  font-weight: 700;
+}
+
+.summary-row.cash-diff.ok,
+.cash-diff-text.ok {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.summary-row.cash-diff.off,
+.cash-diff-text.off {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.cash-diff-text {
+  padding: 2px 8px;
+  border-radius: 8px;
+  font-weight: 600;
+}

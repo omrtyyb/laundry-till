@@ -4,14 +4,14 @@
 import { useEffect, useState } from "react";
 import AdminLogin from "./AdminLogin.jsx";
 import AdminPage from "./AdminPage.jsx";
+import { loadJson } from "../utils/api.js";
 
 export default function AdminArea({ onBack }) {
   // null while asking the server, then { loggedIn, passwordSet }
   const [session, setSession] = useState(null);
 
   const checkSession = () =>
-    fetch("/api/admin/session")
-      .then((response) => response.json())
+    loadJson("/api/admin/session")
       .then((data) => setSession(data));
 
   useEffect(() => {

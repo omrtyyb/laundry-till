@@ -2,7 +2,8 @@
 // Opened by the "Spend Coin from Till" button.
 
 import { showToast } from "../utils/toast.js";
-import Overlay from "../Overlay.jsx";
+import Overlay from "../components/Overlay.jsx";
+import { request } from "../utils/api.js";
 
 // Form for money taken out of the till
 export default function SpendForm({ onClose }) {
@@ -15,17 +16,15 @@ export default function SpendForm({ onClose }) {
           const form = new FormData(e.target);
 
           // Send the spending to the server to be saved
-          const response = await fetch("/api/till-spending", {
+          const { ok, data } = await request("/api/till-spending", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
+            body: {
               description: form.get("description"),
               amount: Number(form.get("amount")),
-            }),
+            },
           });
-          const data = await response.json();
 
-          if (!response.ok) {
+          if (!ok) {
             showToast("Could not save: " + data.error, "error");
             return;
           }

@@ -6,6 +6,7 @@ import { monthName, shortDayName, thisMonthString } from "../utils/dates.js";
 import { pounds } from "../utils/money.js";
 import { CHART_PARTS } from "./chartColors.js";
 import MonthPicker from "./MonthPicker.jsx";
+import { request } from "../utils/api.js";
 
 export default function MonthlySummary() {
   const [month, setMonth] = useState(thisMonthString());
@@ -14,9 +15,8 @@ export default function MonthlySummary() {
 
   // Load the chosen month, and again whenever the month changes
   useEffect(() => {
-    fetch("/api/reports/month?month=" + month).then(async (response) => {
-      const data = await response.json();
-      if (response.ok) {
+    request("/api/reports/month?month=" + month).then(({ ok, data }) => {
+      if (ok) {
         setReport(data);
       } else {
         setError(data.error);

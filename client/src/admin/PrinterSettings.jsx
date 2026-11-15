@@ -5,6 +5,7 @@
 import { useEffect, useState } from "react";
 import { showToast } from "../utils/toast.js";
 import { sendToPrinter } from "../utils/print.js";
+import { loadJson, request } from "../utils/api.js";
 
 // Breaks text into lines no longer than width letters, at spaces where possible
 // (the same way the server lays out the receipt)
@@ -14,13 +15,19 @@ function wrap(text, width) {
   for (const word of text.split(/\s+/).filter(Boolean)) {
     let rest = word;
     while (rest.length > width) {
-      if (line) out.push(line), (line = "");
+      if (line) {
+        out.push(line);
+        line = "";
+      }
       out.push(rest.slice(0, width));
       rest = rest.slice(width);
     }
     if (!line) line = rest;
     else if (line.length + 1 + rest.length <= width) line += " " + rest;
-    else out.push(line), (line = rest);
+    else {
+      out.push(line);
+      line = rest;
+    }
   }
   out.push(line);
   return out;
@@ -79,13 +86,11 @@ function TagPreview({ settings }) {
     let current = true;
     const timer = setTimeout(async () => {
       try {
-        const response = await fetch("/api/admin/printer/tag-preview", {
+        const { ok, data } = await request("/api/admin/printer/tag-preview", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(settings),
+          body: settings,
         });
-        const data = await response.json();
-        if (current) setStrips(response.ok ? data.strips : null);
+        if (current) setStrips(ok ? data.strips : null);
       } catch {
         if (current) setStrips(null);
       }
@@ -122,14 +127,13 @@ export default function PrinterSettings() {
   const [error, setError] = useState(null);
   const [printing, setPrinting] = useState(false);
 
-  const load = async () => {
-    const response = await fetch("/api/admin/printer");
-    const data = await response.json();
-    setSettings(data.settings);
-    setModels(data.models);
-    setCodePages(data.codePages);
-    setQueues(data.queues);
-  };
+  const load = () =>
+    loadJson("/api/admin/printer").then((data) => {
+      setSettings(data.settings);
+      setModels(data.models);
+      setCodePages(data.codePages);
+      setQueues(data.queues);
+    });
 
   useEffect(() => {
     load();
@@ -155,13 +159,8 @@ export default function PrinterSettings() {
   const save = async (e) => {
     e.preventDefault();
     setError(null);
-    const response = await fetch("/api/admin/printer", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(settings),
-    });
-    const data = await response.json();
-    if (response.ok) {
+    const { ok, data } = await request("/api/admin/printer", { method: "PUT", body: settings });
+    if (ok) {
       setSettings(data.settings);
       showToast("Printer settings saved");
     } else {

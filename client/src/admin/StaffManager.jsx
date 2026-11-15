@@ -3,6 +3,7 @@
 // but their names stay on the tickets and sales they made.
 
 import { useEffect, useState } from "react";
+import { loadJson, request } from "../utils/api.js";
 
 // Keep only digits, at most 6
 const digitsOnly = (text) => text.replace(/\D/g, "").slice(0, 6);
@@ -17,8 +18,7 @@ export default function StaffManager() {
   const [error, setError] = useState(null);
 
   const loadWorkers = () =>
-    fetch("/api/admin/staff")
-      .then((response) => response.json())
+    loadJson("/api/admin/staff")
       .then((data) => setWorkers(data));
 
   useEffect(() => {
@@ -29,13 +29,8 @@ export default function StaffManager() {
   const send = async (url, method, body, successText) => {
     setMessage(null);
     setError(null);
-    const response = await fetch(url, {
-      method,
-      headers: { "Content-Type": "application/json" },
-      body: body ? JSON.stringify(body) : undefined,
-    });
-    const data = await response.json();
-    if (!response.ok) {
+    const { ok, data } = await request(url, { method, body });
+    if (!ok) {
       setError(data.error);
       return false;
     }

@@ -2,6 +2,7 @@
 // server; this screen only sends it.
 
 import { useState } from "react";
+import { request } from "../utils/api.js";
 
 export default function AdminLogin({ passwordSet, onLoggedIn, onBack }) {
   const [password, setPassword] = useState("");
@@ -18,13 +19,11 @@ export default function AdminLogin({ passwordSet, onLoggedIn, onBack }) {
         className="ticket-form login-form"
         onSubmit={async (e) => {
           e.preventDefault();
-          const response = await fetch("/api/admin/login", {
+          const { ok, data } = await request("/api/admin/login", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ password }),
+            body: { password },
           });
-          const data = await response.json();
-          if (response.ok) {
+          if (ok) {
             onLoggedIn();
           } else {
             setError(data.error);

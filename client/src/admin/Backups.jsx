@@ -9,6 +9,7 @@
 
 import { useEffect, useState } from "react";
 import { showToast } from "../utils/toast.js";
+import { loadJson, request } from "../utils/api.js";
 
 const sizeText = (bytes) =>
   bytes < 1024 * 1024 ? `${Math.round(bytes / 1024)} KB` : `${(bytes / 1024 / 1024).toFixed(1)} MB`;
@@ -43,14 +44,9 @@ const KIND_TEXT = {
 
 // Sends a request and returns the JSON answer, or throws an Error with the server's message
 async function send(url, method, body) {
-  const response = await fetch(url, {
-    method,
-    headers: body ? { "Content-Type": "application/json" } : undefined,
-    body: body ? JSON.stringify(body) : undefined,
-  });
-  const result = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(result.error || "The till server is not answering");
-  return result;
+  const { ok, data } = await request(url, { method, body });
+  if (!ok) throw new Error(data.error || "The till server is not answering");
+  return data;
 }
 
 export default function Backups() {
@@ -63,8 +59,7 @@ export default function Backups() {
   const [chosenDrive, setChosenDrive] = useState("");
 
   const load = () =>
-    fetch("/api/admin/backups")
-      .then((response) => response.json())
+    loadJson("/api/admin/backups")
       .then(setData);
 
   useEffect(() => {

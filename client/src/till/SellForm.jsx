@@ -3,7 +3,8 @@
 
 import { useEffect, useState } from "react";
 import { showToast } from "../utils/toast.js";
-import Overlay from "../Overlay.jsx";
+import Overlay from "../components/Overlay.jsx";
+import { loadJson, request } from "../utils/api.js";
 
 // Selling screen: first pick a product (or "Other item"), then enter how many
 export default function SellForm({ onClose }) {
@@ -13,8 +14,7 @@ export default function SellForm({ onClose }) {
 
   // Load the product list from the server when the screen opens
   useEffect(() => {
-    fetch("/api/products")
-      .then((response) => response.json())
+    loadJson("/api/products")
       .then((data) => setProducts(data));
   }, []);
 
@@ -65,14 +65,9 @@ export default function SellForm({ onClose }) {
             : { product_id: selected.id, quantity };
 
           // Send the sale to the server to be saved
-          const response = await fetch("/api/sales", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(sale),
-          });
-          const data = await response.json();
+          const { ok, data } = await request("/api/sales", { method: "POST", body: sale });
 
-          if (!response.ok) {
+          if (!ok) {
             showToast("Could not save the sale: " + data.error, "error");
             return;
           }

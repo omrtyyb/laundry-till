@@ -5,6 +5,7 @@ import { todayString } from "../utils/dates.js";
 import { pounds } from "../utils/money.js";
 import TakingsForm from "./TakingsForm.jsx";
 import { CashResult } from "../till/CashDrawerForm.jsx";
+import { request } from "../utils/api.js";
 
 // Admin "Day summary": the totals for one day, chosen with the date picker.
 // startDate is the day to show first (today if not given).
@@ -15,9 +16,8 @@ export default function DaySummary({ startDate }) {
 
   // Load the totals for the chosen date, and again whenever the date changes
   useEffect(() => {
-    fetch("/api/daily-summary?date=" + date).then(async (response) => {
-      const data = await response.json();
-      if (response.ok) {
+    request("/api/daily-summary?date=" + date).then(({ ok, data }) => {
+      if (ok) {
         setSummary(data);
       } else {
         setError(data.error);

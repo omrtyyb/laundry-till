@@ -8,7 +8,8 @@
 import { useEffect, useState } from "react";
 import { pounds } from "../utils/money.js";
 import { showToast } from "../utils/toast.js";
-import Overlay from "../Overlay.jsx";
+import Overlay from "../components/Overlay.jsx";
+import { loadJson, request } from "../utils/api.js";
 
 // "0.5" becomes "50p", "20" becomes "£20"
 const coinLabel = (value) => (value >= 1 ? `£${value}` : `${Math.round(value * 100)}p`);
@@ -102,8 +103,7 @@ export default function CashDrawerForm({ onClose }) {
   const [error, setError] = useState(null);
 
   const load = () =>
-    fetch("/api/cash-drawer")
-      .then((response) => response.json())
+    loadJson("/api/cash-drawer")
       .then((data) => {
         setDrawer(data);
         const start = data.opening_float ?? data.suggested_float;
@@ -134,13 +134,8 @@ export default function CashDrawerForm({ onClose }) {
 
   const post = async (url, body) => {
     setError(null);
-    const response = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
-    const data = await response.json();
-    if (!response.ok) {
+    const { ok, data } = await request(url, { method: "POST", body });
+    if (!ok) {
       setError(data.error);
       return null;
     }

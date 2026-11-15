@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { shortDayName, todayString } from "../utils/dates.js";
 import { pounds } from "../utils/money.js";
 import { CHART_PARTS } from "./chartColors.js";
+import { loadJson } from "../utils/api.js";
 
 const PERIODS = [
   { id: "day", label: "Day" },
@@ -18,8 +19,7 @@ export default function MoneySources() {
   const [report, setReport] = useState(null);
 
   useEffect(() => {
-    fetch(`/api/reports/share?period=${period}&date=${date}`)
-      .then((response) => response.json())
+    loadJson(`/api/reports/share?period=${period}&date=${date}`)
       .then((data) => setReport(data));
   }, [period, date]);
 

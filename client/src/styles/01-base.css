@@ -1,0 +1,104 @@
+/* Page layout, the colours for each kind of money, and the one button style for the whole app */
+
+main {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+}
+
+/* ---------- Buttons: one style for the whole app ----------
+   Every button is rounded, bold, and presses down slightly when clicked.
+   - Normal buttons (Cancel, Back, Admin...) are white with a grey border.
+   - Main action buttons (Save, Sell, Confirm, Search...) are green:
+     any submit button, or a button with class "confirm-button".
+   - Big coloured tiles (till buttons, products, admin menu) keep their colours
+     but share the same rounded corners and press effect. */
+:root {
+  --button-radius: 12px;
+  --button-green: #15803d;
+
+  /* ---------- One colour for each kind of money, used everywhere ----------
+     The till buttons, the activity list, pop-ups, the Admin totals, ticket lists and
+     charts all use these, so dry cleaning always looks the same. Each kind has a strong
+     colour (chart bars, borders, tags), a light background and a dark text colour.
+     The chart colours in admin/chartColors.js must match the strong ones. */
+  --dry-cleaning: #7c3aed; /* purple */
+  --dry-cleaning-bg: #ede9fe;
+  --dry-cleaning-text: #5b21b6;
+  --service-wash: #0891b2; /* teal */
+  --service-wash-bg: #cffafe;
+  --service-wash-text: #155e75;
+  --products: #16a34a; /* green: soap, softener, bags... */
+  --products-bg: #dcfce7;
+  --products-text: #166534;
+  --machine-coins: #2563eb; /* blue: money from the washers and dryers, Money In */
+  --machine-coins-bg: #dbeafe;
+  --machine-coins-text: #1e40af;
+  --spending: #d97706; /* amber: money taken out of the till */
+  --spending-bg: #fef3c7;
+  --spending-text: #92400e;
+  /* Cancelled tickets are red, whatever kind they are */
+  --cancelled-bg: #fecaca;
+  --cancelled-text: #7f1d1d;
+}
+
+button {
+  font: inherit;
+  font-size: 18px;
+  font-weight: 600;
+  padding: 12px 24px;
+  border: 2px solid #cbd5e1;
+  border-radius: var(--button-radius);
+  background: #fff;
+  color: #1f2937;
+  cursor: pointer;
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.12);
+  transition:
+    background 0.15s,
+    filter 0.15s;
+}
+
+/* Hover makes any button a little darker, keeping its own colour */
+button:hover {
+  filter: brightness(0.94);
+}
+
+button:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.12);
+}
+
+button:focus-visible {
+  outline: 3px solid #93c5fd;
+  outline-offset: 2px;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Red buttons for actions that undo something, e.g. Cancel ticket */
+.danger-button {
+  border-color: #b91c1c;
+  background: #b91c1c;
+  color: #fff;
+}
+
+/* WhatsApp's own green, so staff spot it */
+.whatsapp-button {
+  border-color: #128c7e;
+  background: #128c7e;
+  color: #fff;
+}
+
+button[type="submit"],
+.confirm-button {
+  border-color: var(--button-green);
+  background: var(--button-green);
+  color: #fff;
+}

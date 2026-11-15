@@ -4,6 +4,7 @@
 
 import { useEffect, useState } from "react";
 import { pounds } from "../utils/money.js";
+import { loadJson } from "../utils/api.js";
 
 // "2026-10-24 15:30:12" becomes "24 Oct 2026, 3:30pm"
 function shortDateTime(text) {
@@ -40,8 +41,7 @@ export default function TicketList({ kind, onEdit }) {
   const [sortBy, setSortBy] = useState(null);
 
   useEffect(() => {
-    fetch("/api/admin/tickets?kind=" + kind)
-      .then((response) => response.json())
+    loadJson("/api/admin/tickets?kind=" + kind)
       .then((data) => setTickets(data));
   }, [kind]);
 

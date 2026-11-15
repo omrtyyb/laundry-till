@@ -1,0 +1,57 @@
+/* Each kind's colour on pop-ups, ticket lists and tabs */
+
+/* ---------- The kind's colour on pop-ups and ticket lists ---------- */
+
+/* A coloured band along the top of each pop-up, e.g. purple for a dry cleaning ticket */
+.ticket-form.dryCleaning {
+  border-top: 10px solid var(--dry-cleaning);
+}
+
+.ticket-form.serviceWash {
+  border-top: 10px solid var(--service-wash);
+}
+
+.ticket-form.products {
+  border-top: 10px solid var(--products);
+}
+
+.ticket-form.machineCoins {
+  border-top: 10px solid var(--machine-coins);
+}
+
+.ticket-form.spending {
+  border-top: 10px solid var(--spending);
+}
+
+/* A small coloured label, e.g. "Dry cleaning" in the Admin ticket lists */
+.kind-tag {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.kind-tag.dryCleaning {
+  background: var(--dry-cleaning-bg);
+  color: var(--dry-cleaning-text);
+}
+
+.kind-tag.serviceWash {
+  background: var(--service-wash-bg);
+  color: var(--service-wash-text);
+}
+
+/* The Dry cleaning and Service wash tabs in Admin → Tickets, when chosen */
+.sort-button.active.dryCleaning {
+  background: var(--dry-cleaning);
+  border-color: var(--dry-cleaning);
+  color: #fff;
+}
+
+.sort-button.active.serviceWash {
+  background: var(--service-wash);
+  border-color: var(--service-wash);
+  color: #fff;
+}
