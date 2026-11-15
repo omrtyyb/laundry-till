@@ -8,7 +8,8 @@ import { useEffect, useState } from "react";
 import { pounds } from "../utils/money.js";
 import { showToast } from "../utils/toast.js";
 import TicketEditor from "./TicketEditor.jsx";
-import { ordinal } from "./LoyaltyRewards.jsx";
+import { ordinal } from "../utils/ordinal.js";
+import { loadJson, request } from "../utils/api.js";
 
 const dateText = (createdAt) =>
   createdAt
@@ -44,8 +45,7 @@ export default function Customers() {
 
   useEffect(() => {
     let current = true;
-    fetch("/api/admin/customers?q=" + encodeURIComponent(search))
-      .then((response) => response.json())
+    loadJson("/api/admin/customers?q=" + encodeURIComponent(search))
       .then((result) => current && setCustomers(result));
     return () => {
       current = false;
@@ -122,8 +122,7 @@ function CustomerProfile({ customerKey, onBack }) {
   const [show, setShow] = useState("all");
 
   useEffect(() => {
-    fetch("/api/admin/customers/" + encodeURIComponent(customerKey))
-      .then((response) => response.json())
+    loadJson("/api/admin/customers/" + encodeURIComponent(customerKey))
       .then((result) => {
         setCustomer(result);
         setNote(result.note || "");
@@ -131,13 +130,12 @@ function CustomerProfile({ customerKey, onBack }) {
   }, [customerKey, saves]);
 
   const saveNote = async () => {
-    const response = await fetch(`/api/admin/customers/${encodeURIComponent(customerKey)}/note`, {
+    const url = `/api/admin/customers/${encodeURIComponent(customerKey)}/note`;
+    const { ok, data: result } = await request(url, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ note }),
+      body: { note },
     });
-    const result = await response.json();
-    if (!response.ok) return showToast(result.error, "error");
+    if (!ok) return showToast(result.error, "error");
     setCustomer({ ...customer, note: result.note });
     showToast("Note saved");
   };

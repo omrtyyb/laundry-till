@@ -18,6 +18,7 @@ import MoneyInForm from "./MoneyInForm.jsx";
 import ActivitySidebar from "./ActivitySidebar.jsx";
 import StaffSignIn from "./StaffSignIn.jsx";
 import CashDrawerForm from "./CashDrawerForm.jsx";
+import { loadJson, request } from "../utils/api.js";
 
 export default function TillPage({ onOpenAdmin }) {
   const [showSellForm, setShowSellForm] = useState(false);
@@ -39,8 +40,7 @@ export default function TillPage({ onOpenAdmin }) {
   const [afterSignIn, setAfterSignIn] = useState(null);
 
   useEffect(() => {
-    fetch("/api/staff/session")
-      .then((response) => response.json())
+    loadJson("/api/staff/session")
       .then((data) => {
         setStaff(data.staff);
         setStaffRequired(data.staffRequired);
@@ -58,7 +58,7 @@ export default function TillPage({ onOpenAdmin }) {
   };
 
   const signOut = async () => {
-    await fetch("/api/staff/logout", { method: "POST" });
+    await request("/api/staff/logout", { method: "POST" });
     setStaff(null);
   };
 

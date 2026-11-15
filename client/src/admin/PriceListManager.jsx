@@ -5,6 +5,7 @@
 
 import { useEffect, useState } from "react";
 import { priceText } from "../utils/priceText.js";
+import { loadJson, request } from "../utils/api.js";
 
 const EMPTY = {
   category: "Everyday",
@@ -49,8 +50,7 @@ export default function PriceListManager() {
   const [error, setError] = useState(null);
 
   const load = () =>
-    fetch("/api/admin/price-list")
-      .then((response) => response.json())
+    loadJson("/api/admin/price-list")
       .then((result) => setData(result));
 
   useEffect(() => {
@@ -61,13 +61,8 @@ export default function PriceListManager() {
   const send = async (url, method, body, successText) => {
     setMessage(null);
     setError(null);
-    const response = await fetch(url, {
-      method,
-      headers: { "Content-Type": "application/json" },
-      body: body ? JSON.stringify(body) : undefined,
-    });
-    const result = await response.json();
-    if (!response.ok) {
+    const { ok, data: result } = await request(url, { method, body });
+    if (!ok) {
       setError(result.error);
       return false;
     }

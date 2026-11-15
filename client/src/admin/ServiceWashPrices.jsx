@@ -5,6 +5,7 @@
 
 import { useEffect, useState } from "react";
 import { priceText } from "../utils/priceText.js";
+import { loadJson, request } from "../utils/api.js";
 
 const EMPTY = { name: "", price_min: "", price_max: "" };
 
@@ -51,8 +52,7 @@ export default function ServiceWashPrices() {
   const [error, setError] = useState(null);
 
   const load = () =>
-    fetch("/api/admin/service-wash-prices")
-      .then((response) => response.json())
+    loadJson("/api/admin/service-wash-prices")
       .then((result) => setSizes(result));
 
   useEffect(() => {
@@ -63,13 +63,8 @@ export default function ServiceWashPrices() {
   const send = async (url, method, body, successText) => {
     setMessage(null);
     setError(null);
-    const response = await fetch(url, {
-      method,
-      headers: { "Content-Type": "application/json" },
-      body: body ? JSON.stringify(body) : undefined,
-    });
-    const result = await response.json();
-    if (!response.ok) {
+    const { ok, data: result } = await request(url, { method, body });
+    if (!ok) {
       setError(result.error);
       return false;
     }

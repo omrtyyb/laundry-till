@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { pounds } from "../utils/money.js";
+import { request } from "../utils/api.js";
 
 // Collecting a ticket: find it by its number and mark it as collected (and paid, if it wasn't yet).
 // ticketKind is "dry-cleaning-tickets" or "service-wash-tickets".
@@ -18,9 +19,8 @@ export default function CollectTicket({ ticketKind, descriptionName }) {
           e.preventDefault();
           setTicket(null);
           setMessage(null);
-          const response = await fetch(`/api/${ticketKind}/${ticketNumber}`);
-          const data = await response.json();
-          if (response.ok) {
+          const { ok, data } = await request(`/api/${ticketKind}/${ticketNumber}`);
+          if (ok) {
             setTicket(data);
           } else {
             setMessage(data.error);
@@ -72,12 +72,10 @@ export default function CollectTicket({ ticketKind, descriptionName }) {
               className="confirm-button"
               onClick={async () => {
                 const wasPaid = ticket.paid === 1;
-                const response = await fetch(
-                  `/api/${ticketKind}/${ticket.id}/collect`,
-                  { method: "POST" },
-                );
-                const data = await response.json();
-                if (!response.ok) {
+                const { ok, data } = await request(`/api/${ticketKind}/${ticket.id}/collect`, {
+                  method: "POST",
+                });
+                if (!ok) {
                   setMessage(data.error);
                   return;
                 }

@@ -3,6 +3,7 @@
 
 import { useState } from "react";
 import { pounds } from "../utils/money.js";
+import { request } from "../utils/api.js";
 
 // At the end of the day the admin reads the card machine and enters the card total.
 // The rest of the day's money is cash. After a confirmation step it is saved
@@ -67,16 +68,12 @@ export default function TakingsForm({ date, dayTotal, saved: savedAtStart }) {
 
         // Second press (Confirm): save it. A new day is added (POST),
         // an already saved day has its card amount changed (PUT).
-        const response = await fetch(
-          editing ? "/api/daily-takings/" + date : "/api/daily-takings",
-          {
-            method: editing ? "PUT" : "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ date, card_total: Number(card) }),
-          },
-        );
-        const data = await response.json();
-        if (response.ok) {
+        const url = editing ? "/api/daily-takings/" + date : "/api/daily-takings";
+        const { ok, data } = await request(url, {
+          method: editing ? "PUT" : "POST",
+          body: { date, card_total: Number(card) },
+        });
+        if (ok) {
           setSaved(data);
           setEditing(false);
           setConfirming(false);

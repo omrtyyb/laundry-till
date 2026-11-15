@@ -9,7 +9,7 @@
 // text in a box and letting go outside it doesn't close the pop-up. If one pop-up
 // opens on top of another, Escape closes only the top one.
 
-import { useEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 
 // The open pop-ups, oldest first: only the last one answers Escape
 const openOverlays = [];
@@ -18,7 +18,9 @@ export default function Overlay({ onClose, children }) {
   const pressedOnBackground = useRef(false);
   // Always call the latest onClose, without re-adding the key listener each time
   const closeRef = useRef(onClose);
-  closeRef.current = onClose;
+  useLayoutEffect(() => {
+    closeRef.current = onClose;
+  });
 
   useEffect(() => {
     const me = {};

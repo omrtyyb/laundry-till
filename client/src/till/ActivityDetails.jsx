@@ -9,6 +9,7 @@ import { todayString } from "../utils/dates.js";
 import { sendToPrinter } from "../utils/print.js";
 import { showToast } from "../utils/toast.js";
 import Overlay from "../components/Overlay.jsx";
+import { request } from "../utils/api.js";
 
 // Where to load each kind of row from, and its title. isTicket marks the ones that can be cancelled.
 const SOURCES = {
@@ -187,9 +188,8 @@ export default function ActivityDetails({ row, onClose, onChanged }) {
         return;
       }
       const query = message === "ready" ? "?message=ready" : "";
-      const response = await fetch(source.url + row.id + "/whatsapp" + query);
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error);
+      const { ok, data } = await request(source.url + row.id + "/whatsapp" + query);
+      if (!ok) throw new Error(data.error);
       if (tab) tab.location.href = data.link;
       else window.location.href = data.link;
       setMessage(
@@ -203,13 +203,11 @@ export default function ActivityDetails({ row, onClose, onChanged }) {
 
   // Marks the ticket ready to collect, hanging in the slot typed (or none). Returns true if saved.
   const markReady = async () => {
-    const response = await fetch(source.url + row.id + "/ready", {
+    const { ok, data } = await request(source.url + row.id + "/ready", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ slot }),
+      body: { slot },
     });
-    const data = await response.json();
-    if (!response.ok) {
+    if (!ok) {
       setMessage(data.error);
       return false;
     }
@@ -221,11 +219,8 @@ export default function ActivityDetails({ row, onClose, onChanged }) {
 
   // Mark the ticket as paid; the customer collects it later
   const payTicket = async () => {
-    const response = await fetch(source.url + row.id + "/pay", {
-      method: "POST",
-    });
-    const data = await response.json();
-    if (!response.ok) {
+    const { ok, data } = await request(source.url + row.id + "/pay", { method: "POST" });
+    if (!ok) {
       setMessage(data.error);
       return;
     }
@@ -239,11 +234,8 @@ export default function ActivityDetails({ row, onClose, onChanged }) {
   // Mark the ticket as collected; if it wasn't paid yet, it is paid now too
   const collectTicket = async () => {
     const wasPaid = item.paid === 1;
-    const response = await fetch(source.url + row.id + "/collect", {
-      method: "POST",
-    });
-    const data = await response.json();
-    if (!response.ok) {
+    const { ok, data } = await request(source.url + row.id + "/collect", { method: "POST" });
+    if (!ok) {
       setMessage(data.error);
       return;
     }
@@ -257,12 +249,9 @@ export default function ActivityDetails({ row, onClose, onChanged }) {
   };
 
   const cancelTicket = async () => {
-    const response = await fetch(source.url + row.id + "/cancel", {
-      method: "POST",
-    });
-    const data = await response.json();
+    const { ok, data } = await request(source.url + row.id + "/cancel", { method: "POST" });
     setConfirmingCancel(false);
-    if (!response.ok) {
+    if (!ok) {
       setMessage(data.error);
       return;
     }
@@ -276,9 +265,8 @@ export default function ActivityDetails({ row, onClose, onChanged }) {
   };
 
   useEffect(() => {
-    fetch(source.url + row.id).then(async (response) => {
-      const data = await response.json();
-      if (response.ok) setItem(data);
+    request(source.url + row.id).then(({ ok, data }) => {
+      if (ok) setItem(data);
       else setError(data.error);
     });
   }, [source.url, row.id]);

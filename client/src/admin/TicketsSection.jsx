@@ -12,6 +12,7 @@ import TicketSummary from "./TicketSummary.jsx";
 import TicketForm from "../till/TicketForm.jsx";
 import { TICKET_TYPES } from "../till/ticketTypes.js";
 import { pounds } from "../utils/money.js";
+import { loadJson } from "../utils/api.js";
 
 const TABS = [
   { id: "uncollected", label: "Uncollected tickets" },
@@ -44,10 +45,9 @@ export default function TicketsSection() {
 
   useEffect(() => {
     const text = search.trim();
-    if (text === "") return setFound([]);
+    if (text === "") return;
     let current = true;
-    fetch("/api/tickets/search?q=" + encodeURIComponent(text))
-      .then((response) => response.json())
+    loadJson("/api/tickets/search?q=" + encodeURIComponent(text))
       .then((tickets) => current && setFound(tickets));
     return () => {
       current = false;

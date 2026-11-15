@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { formatTime } from "../utils/dates.js";
 import ActivityDetails from "./ActivityDetails.jsx";
+import { loadJson } from "../utils/api.js";
 
 // A ticket's status for the list. Collecting always means it's paid too.
 function ticketStatus(ticket) {
@@ -25,14 +26,12 @@ export default function ActivitySidebar({ refreshKey }) {
   const [results, setResults] = useState([]);
 
   const loadActivity = () =>
-    fetch("/api/till-activity")
-      .then((response) => response.json())
+    loadJson("/api/till-activity")
       .then((data) => setActivity(data));
 
   // openIfOne: open the ticket straight away when exactly one is found (Enter in the box)
   const runSearch = (text, openIfOne = false) =>
-    fetch("/api/tickets/search?q=" + encodeURIComponent(text))
-      .then((response) => response.json())
+    loadJson("/api/tickets/search?q=" + encodeURIComponent(text))
       .then((data) => {
         setResults(data);
         if (openIfOne && data.length === 1) setOpenRow(data[0]);

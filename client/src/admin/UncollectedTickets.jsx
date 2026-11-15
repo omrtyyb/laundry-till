@@ -5,6 +5,7 @@
 import { useEffect, useState } from "react";
 import { pounds } from "../utils/money.js";
 import { showToast } from "../utils/toast.js";
+import { loadJson, request } from "../utils/api.js";
 
 // The "waiting at least" filters, in days
 const FILTERS = [
@@ -23,8 +24,7 @@ export default function UncollectedTickets({ onEdit }) {
   const [minDays, setMinDays] = useState(0);
 
   const load = () =>
-    fetch("/api/uncollected-tickets")
-      .then((response) => response.json())
+    loadJson("/api/uncollected-tickets")
       .then((result) => setData(result));
 
   useEffect(() => {
@@ -36,13 +36,12 @@ export default function UncollectedTickets({ onEdit }) {
   const remind = async (ticket, final) => {
     const tab = window.open("", "_blank");
     try {
-      const response = await fetch(`/api/uncollected-tickets/${ticket.type}/${ticket.id}/remind`, {
+      const url = `/api/uncollected-tickets/${ticket.type}/${ticket.id}/remind`;
+      const { ok, data: result } = await request(url, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ final }),
+        body: { final },
       });
-      const result = await response.json();
-      if (!response.ok) throw new Error(result.error);
+      if (!ok) throw new Error(result.error);
       if (tab) tab.location.href = result.link;
       else window.location.href = result.link;
       load();

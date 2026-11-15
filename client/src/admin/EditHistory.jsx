@@ -2,6 +2,7 @@
 // changed, with who did it and when. Newest first. Entries can't be changed or deleted.
 
 import { useEffect, useState } from "react";
+import { loadJson } from "../utils/api.js";
 
 // "2026-10-25 21:10:05" becomes "Sun 25 Oct 2026, 9:10pm"
 function when(text) {
@@ -28,8 +29,7 @@ export default function EditHistory() {
   const [history, setHistory] = useState(null);
 
   useEffect(() => {
-    fetch("/api/admin/history")
-      .then((response) => response.json())
+    loadJson("/api/admin/history")
       .then((data) => setHistory(data));
   }, []);
 

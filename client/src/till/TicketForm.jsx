@@ -11,6 +11,7 @@ import { sendToPrinter } from "../utils/print.js";
 import { pounds } from "../utils/money.js";
 import Overlay from "../components/Overlay.jsx";
 import LoyaltyOffer from "./LoyaltyOffer.jsx";
+import { loadJson, request } from "../utils/api.js";
 
 // ticketType is one of the settings in ticketTypes.js
 export default function TicketForm({ ticketType, onClose }) {
@@ -29,8 +30,7 @@ export default function TicketForm({ ticketType, onClose }) {
   const [loadSize, setLoadSize] = useState(null);
   useEffect(() => {
     if (!ticketType.hasLoadSizes) return;
-    fetch("/api/service-wash-prices")
-      .then((response) => response.json())
+    loadJson("/api/service-wash-prices")
       .then((sizes) => setLoadSizes(sizes));
   }, [ticketType.hasLoadSizes]);
   // Picking a load size fills in its lowest price; it can be raised up to its highest
@@ -80,10 +80,10 @@ export default function TicketForm({ ticketType, onClose }) {
       const name = nameBox.current.value.trim();
       const phone = phoneBox.current.value.trim();
       if (!name || !phone) return setLoyalty(null);
-      const response = await fetch(
+      const { ok, data } = await request(
         `/api/loyalty/status?kind=${ticketType.kind}&name=${encodeURIComponent(name)}&phone=${encodeURIComponent(phone)}`,
       );
-      const status = response.ok ? await response.json() : null;
+      const status = ok ? data : null;
       setLoyalty(status);
       setGiveLoyalty(Boolean(status?.due));
     }, 400);
@@ -111,10 +111,9 @@ export default function TicketForm({ ticketType, onClose }) {
       return;
     }
     timer.current = setTimeout(async () => {
-      const response = await fetch(
-        "/api/customers/suggest?q=" + encodeURIComponent(text.trim()),
+      setSuggestions(
+        await loadJson("/api/customers/suggest?q=" + encodeURIComponent(text.trim())),
       );
-      setSuggestions(await response.json());
       setSuggestFor(field);
     }, 200);
   };
@@ -172,14 +171,9 @@ export default function TicketForm({ ticketType, onClose }) {
           }
 
           // Send the ticket to the server to be saved
-          const response = await fetch(ticketType.apiUrl, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(ticket),
-          });
-          const data = await response.json();
+          const { ok, data } = await request(ticketType.apiUrl, { method: "POST", body: ticket });
 
-          if (!response.ok) {
+          if (!ok) {
             showToast("Could not save the ticket: " + data.error, "error");
             return;
           }

@@ -4,7 +4,7 @@
 // Nothing is shown when no reward is switched on, or before the name and phone are filled in.
 
 import { pounds } from "../utils/money.js";
-import { ordinal } from "../admin/LoyaltyRewards.jsx";
+import { ordinal } from "../utils/ordinal.js";
 
 // status comes from /api/loyalty/status; give and onGive are the worker's choice;
 // fullPrice is the price before any discount, to show the money off

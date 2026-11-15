@@ -3,6 +3,7 @@
 
 import { useEffect, useState } from "react";
 import Overlay from "../components/Overlay.jsx";
+import { loadJson, request } from "../utils/api.js";
 
 export default function StaffSignIn({ onSignedIn, onClose }) {
   const [workers, setWorkers] = useState([]);
@@ -12,8 +13,7 @@ export default function StaffSignIn({ onSignedIn, onClose }) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch("/api/staff")
-      .then((response) => response.json())
+    loadJson("/api/staff")
       .then((data) => setWorkers(data));
   }, []);
 
@@ -40,13 +40,11 @@ export default function StaffSignIn({ onSignedIn, onClose }) {
           className="ticket-form"
           onSubmit={async (e) => {
             e.preventDefault();
-            const response = await fetch("/api/staff/login", {
+            const { ok, data } = await request("/api/staff/login", {
               method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ staff_id: chosen.id, pin }),
+              body: { staff_id: chosen.id, pin },
             });
-            const data = await response.json();
-            if (response.ok) {
+            if (ok) {
               onSignedIn(data.staff);
             } else {
               setError(data.error);

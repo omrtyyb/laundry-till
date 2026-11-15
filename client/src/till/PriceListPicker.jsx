@@ -9,6 +9,7 @@
 import { useEffect, useState } from "react";
 import { pounds } from "../utils/money.js";
 import { priceText } from "../utils/priceText.js";
+import { loadJson } from "../utils/api.js";
 
 const SERVICE_NAMES = { clean: "dry clean", press: "press only" };
 
@@ -22,8 +23,7 @@ export default function PriceListPicker({ lines, onChange }) {
   const [rangeError, setRangeError] = useState(null);
 
   useEffect(() => {
-    fetch("/api/price-list")
-      .then((response) => response.json())
+    loadJson("/api/price-list")
       .then((data) => setPriceList(data));
   }, []);
 

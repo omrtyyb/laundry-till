@@ -8,6 +8,7 @@ import { pounds } from "../utils/money.js";
 import { showToast } from "../utils/toast.js";
 import { priceText } from "../utils/priceText.js";
 import Overlay from "../components/Overlay.jsx";
+import { loadJson, request } from "../utils/api.js";
 
 const PICKUP_DAYS = [
   "Monday",
@@ -37,16 +38,14 @@ export default function TicketEditor({ kind, id, onClose, onSaved }) {
   const [loadSizes, setLoadSizes] = useState([]);
   useEffect(() => {
     if (isDryCleaning) return;
-    fetch("/api/service-wash-prices")
-      .then((response) => response.json())
+    loadJson("/api/service-wash-prices")
       .then((sizes) => setLoadSizes(sizes));
   }, [isDryCleaning]);
 
   // Load the ticket fresh, and fill the boxes with what's on it now
   useEffect(() => {
-    fetch(LOAD_URLS[kind] + id).then(async (response) => {
-      const ticket = await response.json();
-      if (!response.ok) return setError(ticket.error);
+    request(LOAD_URLS[kind] + id).then(({ ok, data: ticket }) => {
+      if (!ok) return setError(ticket.error);
       setPaidSoFar(ticket.paid ? ticket.price : ticket.deposit || 0);
       setWasCancelled(!!ticket.cancelled);
       setForm({
@@ -128,14 +127,9 @@ export default function TicketEditor({ kind, id, onClose, onSaved }) {
         unit_price: Number(item.unit_price),
       }));
     }
-    const response = await fetch(`/api/admin/tickets/${kind}/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
-    const data = await response.json();
+    const { ok, data } = await request(`/api/admin/tickets/${kind}/${id}`, { method: "PUT", body });
     setSaving(false);
-    if (!response.ok) {
+    if (!ok) {
       showToast("Could not save the ticket: " + data.error, "error");
       return;
     }

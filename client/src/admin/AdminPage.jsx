@@ -19,6 +19,7 @@ import Backups from "./Backups.jsx";
 import Customers from "./Customers.jsx";
 import LoyaltyRewards from "./LoyaltyRewards.jsx";
 import ExcelExport from "./ExcelExport.jsx";
+import { loadJson, request } from "../utils/api.js";
 
 // The reports in the Admin sidebar, in menu order
 const ADMIN_SECTIONS = [
@@ -51,15 +52,14 @@ export default function AdminPage({ onBack, onLoggedOut }) {
   // Every minute, check the log-in is still valid (it ends after 12 hours)
   useEffect(() => {
     const timer = setInterval(async () => {
-      const response = await fetch("/api/admin/session");
-      const data = await response.json();
+      const data = await loadJson("/api/admin/session");
       if (!data.loggedIn) onLoggedOut();
     }, 60 * 1000);
     return () => clearInterval(timer);
   }, [onLoggedOut]);
 
   const logOut = async () => {
-    await fetch("/api/admin/logout", { method: "POST" });
+    await request("/api/admin/logout", { method: "POST" });
     onLoggedOut();
   };
 
@@ -69,7 +69,7 @@ export default function AdminPage({ onBack, onLoggedOut }) {
         {/* Going back to the till also logs the admin out, so staff can't get in after */}
         <button
           onClick={async () => {
-            await fetch("/api/admin/logout", { method: "POST" });
+            await request("/api/admin/logout", { method: "POST" });
             onBack();
           }}
         >

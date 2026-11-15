@@ -6,14 +6,14 @@ import { useEffect, useState } from "react";
 import { shortDayName, thisMonthString, todayString } from "../utils/dates.js";
 import { pounds } from "../utils/money.js";
 import MonthPicker from "./MonthPicker.jsx";
+import { loadJson } from "../utils/api.js";
 
 export default function DaysList({ onOpenDay }) {
   const [month, setMonth] = useState(thisMonthString());
   const [report, setReport] = useState(null);
 
   useEffect(() => {
-    fetch("/api/reports/days?month=" + month)
-      .then((response) => response.json())
+    loadJson("/api/reports/days?month=" + month)
       .then((data) => setReport(data));
   }, [month]);
 
