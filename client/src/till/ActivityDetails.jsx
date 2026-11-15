@@ -8,7 +8,7 @@ import { pounds } from "../utils/money.js";
 import { todayString } from "../utils/dates.js";
 import { sendToPrinter } from "../utils/print.js";
 import { showToast } from "../utils/toast.js";
-import Overlay from "../Overlay.jsx";
+import Overlay from "../components/Overlay.jsx";
 
 // Where to load each kind of row from, and its title. isTicket marks the ones that can be cancelled.
 const SOURCES = {

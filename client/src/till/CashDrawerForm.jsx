@@ -8,7 +8,7 @@
 import { useEffect, useState } from "react";
 import { pounds } from "../utils/money.js";
 import { showToast } from "../utils/toast.js";
-import Overlay from "../Overlay.jsx";
+import Overlay from "../components/Overlay.jsx";
 
 // "0.5" becomes "50p", "20" becomes "£20"
 const coinLabel = (value) => (value >= 1 ? `£${value}` : `${Math.round(value * 100)}p`);

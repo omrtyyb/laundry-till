@@ -2,7 +2,7 @@
 // Opened by the "Spend Coin from Till" button.
 
 import { showToast } from "../utils/toast.js";
-import Overlay from "../Overlay.jsx";
+import Overlay from "../components/Overlay.jsx";
 
 // Form for money taken out of the till
 export default function SpendForm({ onClose }) {

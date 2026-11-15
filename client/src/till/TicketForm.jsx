@@ -9,7 +9,7 @@ import PriceListPicker from "./PriceListPicker.jsx";
 import { showToast } from "../utils/toast.js";
 import { sendToPrinter } from "../utils/print.js";
 import { pounds } from "../utils/money.js";
-import Overlay from "../Overlay.jsx";
+import Overlay from "../components/Overlay.jsx";
 import LoyaltyOffer from "./LoyaltyOffer.jsx";
 
 // ticketType is one of the settings in ticketTypes.js

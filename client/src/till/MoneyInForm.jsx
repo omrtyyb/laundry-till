@@ -4,7 +4,7 @@
 import { useState } from "react";
 import CollectTicket from "./CollectTicket.jsx";
 import CollectMachineMoney from "./CollectMachineMoney.jsx";
-import Overlay from "../Overlay.jsx";
+import Overlay from "../components/Overlay.jsx";
 
 // The Money In pop-up: choose what is being collected, then fill in that part
 export default function MoneyInForm({ onClose }) {

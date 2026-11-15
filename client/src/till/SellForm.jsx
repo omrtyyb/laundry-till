@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from "react";
 import { showToast } from "../utils/toast.js";
-import Overlay from "../Overlay.jsx";
+import Overlay from "../components/Overlay.jsx";
 
 // Selling screen: first pick a product (or "Other item"), then enter how many
 export default function SellForm({ onClose }) {

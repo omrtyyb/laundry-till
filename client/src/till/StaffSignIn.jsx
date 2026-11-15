@@ -2,7 +2,7 @@
 // who is making each ticket, sale or refund. The PIN is checked by the server.
 
 import { useEffect, useState } from "react";
-import Overlay from "../Overlay.jsx";
+import Overlay from "../components/Overlay.jsx";
 
 export default function StaffSignIn({ onSignedIn, onClose }) {
   const [workers, setWorkers] = useState([]);

@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { pounds } from "../utils/money.js";
 import { showToast } from "../utils/toast.js";
 import { priceText } from "../utils/priceText.js";
-import Overlay from "../Overlay.jsx";
+import Overlay from "../components/Overlay.jsx";
 
 const PICKUP_DAYS = [
   "Monday",

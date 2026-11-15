@@ -13,9 +13,9 @@ import { useState } from "react";
 import "./App.css";
 import TillPage from "./till/TillPage.jsx";
 import AdminArea from "./admin/AdminArea.jsx";
-import NumberPad from "./NumberPad.jsx";
-import Toast from "./Toast.jsx";
-import PrintingBar from "./PrintingBar.jsx";
+import NumberPad from "./components/NumberPad.jsx";
+import Toast from "./components/Toast.jsx";
+import PrintingBar from "./components/PrintingBar.jsx";
 
 function App() {
   // Which screen is showing: "till" or "admin"
