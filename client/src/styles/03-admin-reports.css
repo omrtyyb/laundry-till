@@ -1,0 +1,523 @@
+/* Admin totals, reports, the 7/30 day chart, summaries and the admin password page */
+
+/* Admin totals: each kind of income in its own colour */
+.summary-row.income.dryCleaning {
+  background: var(--dry-cleaning-bg);
+  color: var(--dry-cleaning-text);
+}
+
+.summary-row.income.serviceWash {
+  background: var(--service-wash-bg);
+  color: var(--service-wash-text);
+}
+
+.summary-row.income.products {
+  background: var(--products-bg);
+  color: var(--products-text);
+}
+
+.summary-row.income.machineCoins {
+  background: var(--machine-coins-bg);
+  color: var(--machine-coins-text);
+}
+
+.summary-row.day-total {
+  margin-top: 8px;
+  background: #1f2937;
+  color: #fff;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.date-picker {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.date-picker input {
+  font: inherit;
+  font-weight: 400;
+  padding: 8px;
+}
+
+.takings {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.takings h2 {
+  margin: 0;
+}
+
+.takings label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.takings input {
+  width: 160px;
+  font: inherit;
+  font-weight: 400;
+  padding: 8px;
+}
+
+/* Card and cash are greys, so they aren't mixed up with the kinds of money above */
+.summary-row.cash {
+  background: #e2e8f0;
+  color: #1e293b;
+  font-weight: 600;
+}
+
+.takings .form-actions {
+  align-items: center;
+}
+
+.takings-message {
+  color: #166534;
+  font-size: 16px;
+}
+
+.summary-row.card {
+  background: #f1f5f9;
+  color: #334155;
+  font-weight: 600;
+}
+
+.takings-error {
+  margin: 0;
+  color: #b91c1c;
+}
+
+.confirm-box {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: #fff7ed;
+  border: 2px solid #fb923c;
+}
+
+.confirm-box p {
+  margin: 0;
+}
+
+.search-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.search-row input {
+  flex: 1;
+  font: inherit;
+  padding: 10px;
+}
+
+.found-ticket {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: #f1f5f9;
+}
+
+.found-ticket p {
+  margin: 0;
+}
+
+.money-in-message {
+  width: 100%;
+  margin: 0;
+  color: #166534;
+  font-weight: 600;
+}
+
+.activity-id {
+  font-size: 12px;
+  opacity: 0.75;
+}
+
+.activity-empty {
+  margin: 0;
+  color: #64748b;
+}
+
+.admin-body {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.admin-menu {
+  width: 260px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: sticky;
+  top: 16px;
+}
+
+.admin-menu button {
+  text-align: left;
+  padding: 14px 16px;
+}
+
+.admin-menu button.selected {
+  border-color: var(--button-green);
+  background: var(--button-green);
+  color: #fff;
+}
+
+.admin-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+/* ---------- Admin reports ---------- */
+.report {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.report h2 {
+  margin: 0;
+}
+
+.report-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.report-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: #f1f5f9;
+}
+
+.report-card strong {
+  font-size: 28px;
+}
+
+.report-card.overdue {
+  background: #fee2e2;
+  color: #7f1d1d;
+}
+
+.report-card.owed {
+  background: #fef3c7;
+  color: #78350f;
+}
+
+.report-table-wrap {
+  overflow-x: auto;
+}
+
+.report-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 16px;
+}
+
+.report-table th,
+.report-table td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid #e2e8f0;
+  white-space: nowrap;
+}
+
+.report-table th {
+  background: #f8fafc;
+  font-weight: 600;
+}
+
+/* Tickets past their pickup day */
+.report-table tr.overdue td {
+  background: #fee2e2;
+  color: #7f1d1d;
+}
+
+.badge {
+  margin-left: 8px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #b91c1c;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Clickable column headings in report tables: a small version of the normal button */
+.sort-button {
+  padding: 4px 10px;
+  font-size: 16px;
+  box-shadow: none;
+}
+
+.sort-button.active {
+  border-color: var(--button-green);
+  background: var(--button-green);
+  color: #fff;
+}
+
+/* ---------- Last 7 / 30 days chart ---------- */
+.report-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Tab buttons keep their label on one line */
+.report-controls .sort-button {
+  white-space: nowrap;
+}
+
+.chart-legend,
+.chart-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  font-size: 15px;
+  color: #334155;
+}
+
+.chart-legend i,
+.chart-details i {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  vertical-align: -1px;
+}
+
+.chart-legend .legend-line {
+  width: 20px;
+  height: 0;
+  border-top: 2px dashed #52514e;
+  border-radius: 0;
+  vertical-align: 4px;
+}
+
+.chart-details {
+  min-height: 24px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: #f8fafc;
+}
+
+.days-chart {
+  width: 100%;
+  height: auto;
+  background: #fcfcfb;
+  border-radius: 12px;
+}
+
+.days-chart .grid-line {
+  stroke: #e2e8f0;
+  stroke-width: 1;
+}
+
+.days-chart .zero-line {
+  stroke: #64748b;
+  stroke-width: 1.5;
+}
+
+.days-chart .axis-label {
+  font-size: 13px;
+  fill: #52514e;
+}
+
+.days-chart .axis-label.end {
+  text-anchor: end;
+}
+
+.days-chart .axis-label.middle {
+  text-anchor: middle;
+}
+
+/* Fade the other days a little while one is pointed at */
+.days-chart .bar rect {
+  transition: opacity 0.15s;
+}
+
+.days-chart:hover .bar:not(.hovered) rect {
+  opacity: 0.55;
+}
+
+.days-chart .week-before-line {
+  fill: none;
+  stroke: #52514e;
+  stroke-width: 2;
+  stroke-dasharray: 6 4;
+  pointer-events: none;
+}
+
+.days-chart .week-before-dot {
+  fill: #fcfcfb;
+  stroke: #52514e;
+  stroke-width: 2;
+}
+
+/* The chart and its small mouse label sit in this box */
+.chart-box {
+  position: relative;
+}
+
+/* Small label next to the mouse, e.g. "Spending: −£34.00" */
+.chart-tip {
+  position: absolute;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: #1f2937;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* ---------- Monthly summary, money sources, days list, customers ---------- */
+.report h3 {
+  margin: 8px 0 0;
+}
+
+.report-cards.two {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.report-card small {
+  color: #475569;
+}
+
+.report-card.dark {
+  background: #1f2937;
+  color: #fff;
+}
+
+.report-card.good {
+  background: #dcfce7;
+  color: #14532d;
+}
+
+.report-note {
+  margin: 0;
+  color: #475569;
+}
+
+.report-warning {
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: #fef3c7;
+  color: #78350f;
+  font-weight: 600;
+}
+
+/* A small coloured square next to a label, matching the chart colours */
+.swatch {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  vertical-align: -1px;
+}
+
+.date-picker.small {
+  font-size: 16px;
+  margin-left: 8px;
+}
+
+/* Where the money comes from: one long bar split into shares */
+.share-bar {
+  display: flex;
+  gap: 2px;
+  height: 56px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fcfcfb;
+}
+
+.share-part {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 4px;
+  font-weight: 700;
+  color: #0b0b0b;
+}
+
+.share-part span {
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.85);
+  font-size: 14px;
+}
+
+.summary-row.share-row {
+  background: #f8fafc;
+}
+
+/* Days list: rows can be clicked to open the day */
+.report-table.clickable tbody tr {
+  cursor: pointer;
+}
+
+.report-table.clickable tbody tr:hover td {
+  background: #f1f5f9;
+}
+
+.report-table tr.flagged td {
+  background: #fef3c7;
+}
+
+.badge.warning {
+  margin-left: 0;
+  background: #b45309;
+}
+
+/* ---------- Admin password ---------- */
+.login-form,
+.security-form {
+  align-self: center;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+
+.security-form {
+  align-self: flex-start;
+}
+
+.ticket-form h3 {
+  margin: 0;
+}
+
+/* Log out sits at the far right of the Admin header */
+.admin header .log-out {
+  margin-left: auto;
+}

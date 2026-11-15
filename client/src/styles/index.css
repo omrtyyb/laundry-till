@@ -1,0 +1,17 @@
+/* All the app's styles, loaded in this order (later files win when two rules clash).
+   The colours for each kind of money are at the top of 01-base.css. */
+
+@import "./00-body.css";
+@import "./01-base.css";
+@import "./02-till.css";
+@import "./03-admin-reports.css";
+@import "./04-till-details.css";
+@import "./05-touch.css";
+@import "./06-phone.css";
+@import "./07-ticket-extras.css";
+@import "./08-admin-settings.css";
+@import "./09-kind-colours.css";
+@import "./10-printing-bar.css";
+@import "./11-ticket-summary-and-receipt.css";
+@import "./12-cash-drawer.css";
+@import "./13-admin-pages.css";

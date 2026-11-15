@@ -1,0 +1,83 @@
+/* Admin: ticket summary dates and the receipt text editor with its preview */
+
+/* Admin → Tickets → Ticket summary: the From / Until boxes and the PDF button */
+.summary-times {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+  margin: 12px 0;
+}
+
+.summary-times label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-weight: 600;
+}
+
+.summary-times input {
+  font: inherit;
+  font-weight: 400;
+  padding: 8px;
+}
+
+.report-table tfoot .totals-row td {
+  font-weight: 700;
+  background: #1f2937;
+  color: #fff;
+}
+
+/* Admin → Printer → Customise the receipt: the boxes, and a preview beside them */
+.receipt-custom {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.receipt-custom-boxes {
+  flex: 1 1 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.receipt-custom-boxes textarea {
+  font: inherit;
+  font-weight: 400;
+  padding: 10px;
+  resize: vertical;
+}
+
+.receipt-preview-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Looks like a strip of receipt paper */
+.receipt-preview {
+  box-sizing: content-box;
+  padding: 16px 12px;
+  background: #fff;
+  border: 1px solid #cbd5e1;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  font-family: "Courier New", monospace;
+  font-size: 13px;
+  line-height: 1.35;
+  color: #000;
+  white-space: pre;
+  overflow: hidden;
+}
+
+.receipt-preview .bold {
+  font-weight: 700;
+}
+
+/* Big text is twice as wide and tall, like on the printer */
+.receipt-preview .big {
+  font-weight: 700;
+  font-size: 26px;
+  line-height: 1.2;
+}

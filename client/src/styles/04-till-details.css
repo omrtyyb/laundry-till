@@ -1,0 +1,101 @@
+/* Till: the activity details pop-up, activity search and the staff sign-in */
+
+/* ---------- Activity details pop-up ---------- */
+.details-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+}
+
+.details-list div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.details-list dt {
+  color: #475569;
+}
+
+.details-list dd {
+  margin: 0;
+  font-weight: 600;
+  text-align: right;
+}
+
+.activity-row:focus-visible {
+  outline: 3px solid #93c5fd;
+  outline-offset: 2px;
+}
+
+/* Search box at the top of the till's activity list */
+.activity-search {
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  font: inherit;
+  border: 2px solid #cbd5e1;
+  border-radius: 12px;
+}
+
+/* The "Till activity" heading is a button that clears the search; it looks like a heading */
+.activity-heading {
+  padding: 0;
+  border: none;
+  background: none;
+  box-shadow: none;
+  font-size: 22px;
+  font-weight: 700;
+  color: inherit;
+}
+
+.activity-heading:hover {
+  filter: none;
+  text-decoration: underline;
+}
+
+.activity-heading:active {
+  transform: none;
+}
+
+/* ---------- Staff ---------- */
+/* Who is working, at the right of the till header */
+.staff-bar {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 18px;
+}
+
+/* Name + PIN + button on one line in Admin → Staff */
+.staff-add {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.staff-add input {
+  flex: 1;
+  min-width: 160px;
+  font: inherit;
+  padding: 10px;
+}
+
+/* Edit / Remove buttons at the end of a row: the cell stays as narrow as its buttons
+   (a table cell can't be a flex box without breaking the table's columns) */
+.report-table td.row-actions {
+  width: 1%;
+  text-align: right;
+}
+
+.report-table td.row-actions button + button {
+  margin-left: 8px;
+}
+
+.report-table tr.removed td {
+  color: #94a3b8;
+}

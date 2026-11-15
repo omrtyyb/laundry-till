@@ -1,0 +1,187 @@
+/* New ticket extras: customer suggestions, 2-second messages and the price list picker */
+
+/* ---------- Customer suggestions on a new ticket ---------- */
+.customer-suggestions {
+  list-style: none;
+  margin: -8px 0 0;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #f8fafc;
+}
+
+.customer-suggestions button {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2px 12px;
+  text-align: left;
+  padding: 10px 12px;
+  box-shadow: none;
+}
+
+.customer-suggestions small {
+  grid-column: 1 / -1;
+  font-weight: 400;
+  color: #475569;
+}
+
+/* ---------- 2-second pop-up messages ---------- */
+.toast {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 200;
+  max-width: calc(100vw - 32px);
+  padding: 16px 24px;
+  border-radius: 14px;
+  font-size: 20px;
+  font-weight: 600;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+  animation: toast-in 0.2s ease-out;
+}
+
+/* Saved: green */
+.toast.success {
+  background: #dcfce7;
+  color: #14532d;
+  border: 2px solid #16a34a;
+}
+
+/* Could not save: red */
+.toast.error {
+  background: #fee2e2;
+  color: #7f1d1d;
+  border: 2px solid #dc2626;
+}
+
+/* Slides down a little as it appears */
+@keyframes toast-in {
+  from {
+    transform: translate(-50%, -10px);
+  }
+}
+
+/* Edit history: the details can be long, so they wrap */
+.history-table td:nth-child(3) {
+  white-space: normal;
+  min-width: 260px;
+}
+
+/* "Still owed on collection" under the deposit box */
+.owed-note {
+  margin: -8px 0 0;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: #fef3c7;
+  color: #78350f;
+}
+
+/* ---------- Price list picker on a dry cleaning ticket ---------- */
+.price-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.price-search {
+  flex: 1;
+  min-width: 140px;
+  padding: 8px 12px;
+  font: inherit;
+}
+
+.price-groups {
+  max-height: 320px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-right: 4px;
+}
+
+.price-groups h4 {
+  margin: 0 0 6px;
+  color: #475569;
+}
+
+.price-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 6px;
+}
+
+.price-items button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 8px 10px;
+  font-size: 14px;
+  text-align: left;
+  border-color: #c7d2fe;
+  background: #eef2ff;
+  color: #1e1b4b;
+  box-shadow: none;
+}
+
+.price-items button small {
+  font-size: 13px;
+  font-weight: 400;
+  color: #3730a3;
+}
+
+.range-quick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.range-quick input {
+  width: 120px;
+  font: inherit;
+  padding: 8px;
+}
+
+.picked-items {
+  list-style: none;
+  margin: 0;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-radius: 12px;
+  background: #f0fdf4;
+}
+
+.picked-items li {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.picked-items small {
+  color: #475569;
+}
+
+.picked-buttons {
+  display: flex;
+  gap: 4px;
+}
+
+.picked-buttons button {
+  min-width: 44px;
+}
+
+/* Items list in the ticket details pop-up */
+.ticket-items-list {
+  margin: 0;
+  padding-left: 18px;
+}

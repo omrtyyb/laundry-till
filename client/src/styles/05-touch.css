@@ -1,0 +1,124 @@
+/* Touch-friendly sizes and the on-screen number pad */
+
+/* ======================================================================
+   Touch-friendly sizes
+   Every button and box is at least 48px tall, big enough for a finger.
+   ====================================================================== */
+button,
+input,
+select,
+textarea {
+  min-height: 48px;
+  box-sizing: border-box;
+}
+
+input,
+select,
+textarea {
+  font-size: 18px;
+}
+
+input[type="checkbox"] {
+  min-height: 0;
+  width: 28px;
+  height: 28px;
+}
+
+.ticket-form .checkbox-label input {
+  width: 28px;
+  height: 28px;
+}
+
+.sort-button {
+  min-height: 44px;
+  padding: 8px 14px;
+}
+
+.activity-row {
+  padding: 12px 14px;
+}
+
+/* Pop-ups never grow taller than the screen; long ones scroll inside */
+.overlay {
+  padding: 16px;
+  box-sizing: border-box;
+  z-index: 10;
+}
+
+.ticket-form {
+  max-height: 100%;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+/* ---------- On-screen number pad (touchscreens) ---------- */
+.number-pad {
+  position: fixed;
+  left: 50%;
+  bottom: 12px;
+  transform: translateX(-50%);
+  z-index: 100;
+  width: min(380px, calc(100vw - 24px));
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 20px;
+  background: #1f2937;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.number-pad-display {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: #fff;
+  color: #475569;
+  font-size: 15px;
+}
+
+.number-pad-display strong {
+  color: #111;
+  font-size: 26px;
+}
+
+.number-pad-keys {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.number-pad-keys button {
+  min-height: 60px;
+  font-size: 26px;
+}
+
+.number-pad-keys button.unused {
+  visibility: hidden;
+}
+
+.number-pad-actions {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 8px;
+}
+
+.number-pad-actions button {
+  min-height: 56px;
+}
+
+/* While the pad is open, pop-ups move up so the pad doesn't cover them */
+.number-pad-open .overlay {
+  align-items: flex-start;
+  padding-bottom: 400px;
+}
+
+/* Pages that scroll (like Admin) get room at the bottom; the till screen fits one screen */
+.number-pad-open main:not(.till) {
+  padding-bottom: 400px;
+}
