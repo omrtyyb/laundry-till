@@ -151,7 +151,7 @@ export default function ActivityDetails({ row, onClose, onChanged }) {
   const [markingReady, setMarkingReady] = useState(false);
   const [slot, setSlot] = useState("");
   const source = SOURCES[row.type];
-  // The colour of the pop-up: the same as the row's kind (see the colours in App.css)
+  // The colour of the pop-up: the same as the row's kind (see the colours in styles/01-base.css)
   const colour = row.type.startsWith("dryCleaning")
     ? "dryCleaning"
     : row.type.startsWith("serviceWash")

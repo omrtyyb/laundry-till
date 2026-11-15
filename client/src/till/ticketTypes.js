@@ -5,7 +5,7 @@
 // printUrl is where the ticket is printed from when it isn't apiUrl.
 export const TICKET_TYPES = {
   dryCleaning: {
-    // Its colour class (see the colours at the top of App.css)
+    // Its colour class (see the colours at the top of styles/01-base.css)
     kind: "dryCleaning",
     title: "Dry Cleaning Ticket",
     apiUrl: "/api/dry-cleaning-tickets",
