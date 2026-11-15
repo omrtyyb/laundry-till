@@ -40,8 +40,8 @@ flowchart LR
     UI -. "opens link" .-> WA
 ```
 
-1. The React app calls `/api/...` with `fetch`. In development, Vite forwards these calls to the
-   server (`client/vite.config.js`).
+1. The React app calls `/api/...` through `client/src/utils/api.js` (`loadJson` to read, `request` to
+   save). In development, Vite forwards these calls to the server (`client/vite.config.js`).
 2. `auth/accessRules.js` checks every URL. Admin URLs need the admin cookie. Till actions that save
    something need a signed-in worker once at least one worker exists (`requireStaff`).
 3. The route file does the work, usually with shared helpers from `lib/`, and answers with JSON
@@ -235,10 +235,10 @@ answers.
 | Path | What it does |
 | --- | --- |
 | `main.jsx`, `App.jsx` | Starts React; switches between the till and admin screens. |
-| `App.css`, `index.css` | All styles. One colour per kind of money, as CSS variables at the top of `App.css` (dry cleaning purple, service wash teal, sales green, machine money blue, spending amber, cancelled red). `admin/chartColors.js` must match. |
-| `NumberPad.jsx` | The big on-screen number pad on touchscreens. |
-| `Overlay.jsx` | The dark background behind pop-ups; click it or press Escape to close. |
-| `Toast.jsx`, `PrintingBar.jsx` | Short "saved" messages, and the moving line while printing. |
+| `styles/` | All styles, split by area (`01-base.css`, `02-till.css`, `03-admin-reports.css`...) and loaded in order by `styles/index.css`, so later files win when two rules clash. One colour per kind of money, as CSS variables at the top of `01-base.css` (dry cleaning purple, service wash teal, sales green, machine money blue, spending amber, cancelled red). `admin/chartColors.js` must match. |
+| `components/NumberPad.jsx` | The big on-screen number pad on touchscreens. |
+| `components/Overlay.jsx` | The dark background behind pop-ups; click it or press Escape to close. |
+| `components/Toast.jsx`, `components/PrintingBar.jsx` | Short "saved" messages, and the moving line while printing. |
 | `till/TillPage.jsx` | The six big buttons, their pop-ups and the activity list. |
 | `till/TicketForm.jsx`, `till/ticketTypes.js` | The new ticket form for both kinds of ticket. |
 | `till/PriceListPicker.jsx`, `till/CustomerSuggestions.jsx`, `till/LoyaltyOffer.jsx` | Parts of the ticket form. |
@@ -249,7 +249,7 @@ answers.
 | `till/StaffSignIn.jsx`, `till/TillIcons.jsx` | Worker sign-in; button icons. |
 | `admin/AdminArea.jsx`, `admin/AdminLogin.jsx`, `admin/AdminPage.jsx` | Password screen and the admin menu. |
 | `admin/*.jsx` | One file per admin page (see the table above). |
-| `utils/` | `dates.js`, `money.js`, `priceText.js`, `toast.js`, and `print.js` (print jobs and the browser print window, barcodes with `jsbarcode`). |
+| `utils/` | `api.js` (every call to the server: `loadJson` reads, `request` saves and returns `{ ok, data }`), `dates.js`, `money.js`, `ordinal.js`, `priceText.js`, `toast.js`, and `print.js` (print jobs and the browser print window, barcodes with `jsbarcode`). |
 
 ### Back end (`server`)
 

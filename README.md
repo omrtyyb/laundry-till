@@ -81,9 +81,11 @@ Open http://localhost:5173.
 laundry-till/
 ├── client/            React front end (Vite)
 │   └── src/
-│       ├── till/      the till screen and its pop-ups
-│       ├── admin/     the admin area, one file per page
-│       └── utils/     dates, money, printing helpers
+│       ├── till/        the till screen and its pop-ups
+│       ├── admin/       the admin area, one file per page
+│       ├── components/  parts both use: number pad, pop-up frame, messages, printing bar
+│       ├── utils/       server calls (api.js), dates, money, printing helpers
+│       └── styles/      CSS split by area, loaded in order from styles/index.css
 ├── server/            Node.js back end (Express)
 │   ├── routes/        one file per feature: admin, reports, price lists, till, tickets
 │   ├── db/            connection and schema (one file per group of tables)
